@@ -1,0 +1,162 @@
+[
+    {
+        "id": 1,
+        "character": "isfj", "characterName": "妖精", "characterIcon": "/assets/images/characters/isfj_fairy_idle.png",
+        "bubble": "あなたのことを教えてくれる？",
+        "question": "週末の過ごし方として、どちらが好き？",
+        "choices": [
+            { "id": "A", "text": "家で静かに過ごす", "axis": "I" },
+            { "id": "B", "text": "友達とパーティー", "axis": "E" }
+        ]
+    },
+    {
+        "id": 2,
+        "character": "entp", "characterName": "発明家", "characterIcon": "/assets/images/characters/entp_inventor_idle.png",
+        "bubble": "ふむふむ、興味深いね…",
+        "question": "物事を考えるとき、どちらを重視する？",
+        "choices": [
+            { "id": "A", "text": "未来の可能性やアイデア", "axis": "N" },
+            { "id": "B", "text": "現実的な事実や経験", "axis": "S" }
+        ]
+    },
+    {
+        "id": 3,
+        "character": "infp", "characterName": "魔法使い", "characterIcon": "/assets/images/characters/infp_wizard_idle.png",
+        "bubble": "心の声を聞かせて…",
+        "question": "決断を下すとき、大切なのは？",
+        "choices": [
+            { "id": "A", "text": "みんなの気持ちや調和", "axis": "F" },
+            { "id": "B", "text": "論理的な正しさや公平さ", "axis": "T" }
+        ]
+    },
+    {
+        "id": 4,
+        "character": "entj", "characterName": "騎士", "characterIcon": "/assets/images/characters/entj_knight_idle.png",
+        "bubble": "効率的なのはどちらかな？",
+        "question": "旅行の計画を立てるときは？",
+        "choices": [
+            { "id": "A", "text": "行き当たりばったりで楽しむ", "axis": "P" },
+            { "id": "B", "text": "事前にしっかり計画を立てる", "axis": "J" }
+        ]
+    },
+    {
+        "id": 5,
+        "character": "isfj", "characterName": "妖精", "characterIcon": "/assets/images/characters/isfj_fairy_idle.png",
+        "bubble": "大丈夫、ゆっくりでいいよ",
+        "question": "初対面の人と話すのは？",
+        "choices": [
+            { "id": "A", "text": "少しエネルギーがいる", "axis": "I" },
+            { "id": "B", "text": "わくわくして楽しい", "axis": "E" }
+        ]
+    },
+    {
+        "id": 6,
+        "character": "entp", "characterName": "発明家", "characterIcon": "/assets/images/characters/entp_inventor_idle.png",
+        "bubble": "これはどうかな？面白いアイデアだ！",
+        "question": "新しいスキルを学ぶとき、どちらのタイプ？",
+        "choices": [
+            { "id": "A", "text": "全体像を掴んでから始める", "axis": "N" },
+            { "id": "B", "text": "実践しながら一つずつ覚える", "axis": "S" }
+        ]
+    },
+    {
+        "id": 7,
+        "character": "infp", "characterName": "魔法使い", "characterIcon": "/assets/images/characters/infp_wizard_idle.png",
+        "bubble": "あなたの優しさが伝わってくるよ",
+        "question": "友達が悩んでいたら？",
+        "choices": [
+            { "id": "A", "text": "まずは共感し、慰める", "axis": "F" },
+            { "id": "B", "text": "具体的な解決策を考える", "axis": "T" }
+        ]
+    },
+    {
+        "id": 8,
+        "character": "entj", "characterName": "騎士", "characterIcon": "/assets/images/characters/entj_knight_idle.png",
+        "bubble": "整理整頓は基本だ",
+        "question": "あなたのデスク周りは？",
+        "choices": [
+            { "id": "A", "text": "創造的なカオス", "axis": "P" },
+            { "id": "B", "text": "整理整頓されている", "axis": "J" }
+        ]
+    },
+    {
+        "id": 9,
+        "character": "isfj", "characterName": "妖精", "characterIcon": "/assets/images/characters/isfj_fairy_idle.png",
+        "bubble": "無理しないでね",
+        "question": "エネルギーを回復する方法は？",
+        "choices": [
+            { "id": "A", "text": "一人の時間を楽しむ", "axis": "I" },
+            { "id": "B", "text": "人と交流する", "axis": "E" }
+        ]
+    },
+    {
+        "id": 10,
+        "character": "entp", "characterName": "発明家", "characterIcon": "/assets/images/characters/entp_inventor_idle.png",
+        "bubble": "なぜそうなるんだろう？",
+        "question": "説明書を読むとき",
+        "choices": [
+            { "id": "A", "text": "理論や背景が気になる", "axis": "N" },
+            { "id": "B", "text": "手順通りに実行できれば良い", "axis": "S" }
+        ]
+    },
+    {
+        "id": 11,
+        "character": "infp", "characterName": "魔法使い", "characterIcon": "/assets/images/characters/infp_wizard_idle.png",
+        "bubble": "どちらの言葉が心に響く？",
+        "question": "仕事で評価されるなら、どちらが嬉しい？",
+        "choices": [
+            { "id": "A", "text": "「優しいね」と言われる", "axis": "F" },
+            { "id": "B", "text": "「有能だね」と言われる", "axis": "T" }
+        ]
+    },
+    {
+        "id": 12,
+        "character": "entj", "characterName": "騎士", "characterIcon": "/assets/images/characters/entj_knight_idle.png",
+        "bubble": "計画通りに進めよう！",
+        "question": "締め切りが近づいてきたら？",
+        "choices": [
+            { "id": "A", "text": "プレッシャーで集中力が高まる", "axis": "P" },
+            { "id": "B", "text": "早めに終わらせて安心したい", "axis": "J" }
+        ]
+    },
+    {
+        "id": 13,
+        "character": "isfj", "characterName": "妖精", "characterIcon": "/assets/images/characters/isfj_fairy_idle.png",
+        "bubble": "あなたのペースでいいんだよ",
+        "question": "注目を浴びるのは？",
+        "choices": [
+            { "id": "A", "text": "どちらかと言えば避けたい", "axis": "I" },
+            { "id": "B", "text": "得意な方だ", "axis": "E" }
+        ]
+    },
+    {
+        "id": 14,
+        "character": "entp", "characterName": "発明家", "characterIcon": "/assets/images/characters/entp_inventor_idle.png",
+        "bubble": "そのアイデア、もっと聞かせて！",
+        "question": "新しいアイデアを聞いたとき",
+        "choices": [
+            { "id": "A", "text": "その発想に興奮する", "axis": "N" },
+            { "id": "B", "text": "どうやって実現するかを考える", "axis": "S" }
+        ]
+    },
+    {
+        "id": 15,
+        "character": "infp", "characterName": "魔法使い", "characterIcon": "/assets/images/characters/infp_wizard_idle.png",
+        "bubble": "みんなが幸せでありますように…",
+        "question": "意見が対立したとき",
+        "choices": [
+            { "id": "A", "text": "相手の感情を害さないよう気をつける", "axis": "F" },
+            { "id": "B", "text": "客観的な事実に基づいて議論する", "axis": "T" }
+        ]
+    },
+    {
+        "id": 16,
+        "character": "entj", "characterName": "騎士", "characterIcon": "/assets/images/characters/entj_knight_idle.png",
+        "bubble": "一日の計は朝にあり！",
+        "question": "休日の朝は？",
+        "choices": [
+            { "id": "A", "text": "その日の気分で行動する", "axis": "P" },
+            { "id": "B", "text": "やることリストがある", "axis": "J" }
+        ]
+    }
+]
