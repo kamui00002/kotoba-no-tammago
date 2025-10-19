@@ -65,7 +65,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             evolutionStage: EvolutionStage.EGG,
         };
         setUserProgress(newProgress);
-        setGameState(GameState.HOME);
+        setGameState(GameState.MBTI_RESULT);
     }, [setUserProgress]);
     
     const startQuiz = useCallback((difficulty: Difficulty) => {

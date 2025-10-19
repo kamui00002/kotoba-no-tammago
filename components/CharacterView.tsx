@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useGame } from '../context/GameContext';
 import { XP_PER_LEVEL, CHARACTER_DATA } from '../constants';
@@ -37,7 +36,7 @@ const CharacterView: React.FC = () => {
     };
 
     return (
-        <div className="w-full max-w-md bg-cover bg-center bg-no-repeat rounded-2xl shadow-2xl p-6 relative" style={{ backgroundImage: `url(${getBackgroundImagePath()})` }}>
+        <div className="w-full max-w-lg bg-cover bg-center bg-no-repeat rounded-2xl shadow-2xl p-6 relative" style={{ backgroundImage: `url(${getBackgroundImagePath()})` }}>
             <div className="bg-black/50 backdrop-blur-sm rounded-xl p-4">
                 <div className="flex justify-between items-start mb-4">
                     <div>
@@ -47,7 +46,7 @@ const CharacterView: React.FC = () => {
                     <div className="bg-purple-600 text-white text-sm font-bold px-3 py-1 rounded-full">{mbtiType}</div>
                 </div>
 
-                <div className="flex justify-center items-center my-8 h-48">
+                <div className="flex justify-center items-center my-6 h-64">
                     <img src={getImagePath()} alt={characterType} className="max-h-full object-contain drop-shadow-2xl" />
                 </div>
 

@@ -2,6 +2,7 @@ export enum GameState {
     HOME = 'HOME',
     QUIZ = 'QUIZ',
     RESULT = 'RESULT',
+    MBTI_RESULT = 'MBTI_RESULT',
 }
 
 export interface MbtiChoice {

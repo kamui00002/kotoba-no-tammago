@@ -19,11 +19,35 @@ export const SIMPLIFIED_MBTI_MAP: Record<string, CharacterType> = {
     'ENTP': CharacterType.INVENTOR,
 };
 
-export const CHARACTER_DATA: Record<CharacterType, { name: string, mbti: string }> = {
-    [CharacterType.WIZARD]: { name: '魔法使い', mbti: 'INFP' },
-    [CharacterType.KNIGHT]: { name: '騎士', mbti: 'ENTJ' },
-    [CharacterType.FAIRY]: { name: '妖精', mbti: 'ISFJ' },
-    [CharacterType.INVENTOR]: { name: '発明家', mbti: 'ENTP' },
+export const CHARACTER_DATA: Record<CharacterType, { name: string, mbti: string, title: string, description: string, gradient: string }> = {
+    [CharacterType.WIZARD]: {
+        name: '魔法使い',
+        mbti: 'INFP',
+        title: '夢見る魔法使い',
+        description: 'あなたの内なる世界の探求者。深い共感力と創造力で、仲間を癒やし、新たな可能性を見出します。',
+        gradient: 'from-purple-500 to-indigo-800'
+    },
+    [CharacterType.KNIGHT]: {
+        name: '騎士',
+        mbti: 'ENTJ',
+        title: '大胆不敵な騎士',
+        description: '生まれながらのリーダー。決断力と戦略的思考で、どんな困難も乗り越え、仲間を勝利へと導きます。',
+        gradient: 'from-red-600 to-gray-800'
+    },
+    [CharacterType.FAIRY]: {
+        name: '妖精',
+        mbti: 'ISFJ',
+        title: '心優しき妖精',
+        description: '献身的な心を持つ守護者。思いやりと責任感で、仲間を支え、コミュニティに温かさをもたらします。',
+        gradient: 'from-emerald-400 to-teal-700'
+    },
+    [CharacterType.INVENTOR]: {
+        name: '発明家',
+        mbti: 'ENTP',
+        title: '好奇心旺盛な発明家',
+        description: '知的な挑戦を愛する革新者。ユニークな視点と議論好きの一面で、世界に新しいアイデアを生み出します。',
+        gradient: 'from-yellow-400 to-orange-600'
+    },
 };
 
 export const EVOLUTION_LEVELS: Record<EvolutionStage, number> = {

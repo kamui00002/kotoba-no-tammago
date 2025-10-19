@@ -5,6 +5,7 @@ import HomeScreen from './components/HomeScreen';
 import Quiz from './components/Quiz';
 import ResultScreen from './components/ResultScreen';
 import SplashScreen from './components/SplashScreen';
+import MbtiResultScreen from './components/MbtiResultScreen';
 import { GameState } from './types';
 
 const AppContent: React.FC = () => {
@@ -36,6 +37,8 @@ const AppContent: React.FC = () => {
                 return <Quiz />;
             case GameState.RESULT:
                 return <ResultScreen />;
+            case GameState.MBTI_RESULT:
+                return <MbtiResultScreen />;
             default:
                 return <HomeScreen />;
         }

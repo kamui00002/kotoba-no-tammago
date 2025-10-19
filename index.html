@@ -47,6 +47,17 @@
         animation: blink-dot 1.4s infinite;
         animation-delay: 0.4s;
       }
+      @keyframes bounce-char {
+        0%, 100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-20px);
+        }
+      }
+      .animate-bounce-char {
+        animation: bounce-char 3s ease-in-out infinite;
+      }
     </style>
   </head>
   <body class="bg-slate-900 text-white">
