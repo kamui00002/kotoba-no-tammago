@@ -1,7 +1,7 @@
 import React from 'react';
-import { CHARACTER_DATA } from '../constants';
 import ExpBarView from './ExpBarView';
 import { MbtiType, CharacterType } from '../types';
+import { getBackgroundImage } from '../utils/imageUtils';
 
 interface CharacterViewProps {
     name: string;
@@ -24,16 +24,11 @@ const CharacterView: React.FC<CharacterViewProps> = ({
     onCharacterTap,
     characterType,
 }) => {
-    const characterInfo = CHARACTER_DATA[characterType];
     
-    const getBackgroundImagePath = () => {
-        const mbtiLower = characterInfo.mbti.toLowerCase();
-        const typeName = characterType;
-        return `/assets/images/backgrounds/bg_${mbtiLower}_${typeName}.png`;
-    };
+    const backgroundImage = getBackgroundImage(characterType);
 
     return (
-        <div className="w-full bg-cover bg-center bg-no-repeat rounded-2xl shadow-2xl p-6 relative" style={{ backgroundImage: `url(${getBackgroundImagePath()})` }}>
+        <div className="w-full bg-cover bg-center bg-no-repeat rounded-2xl shadow-2xl p-6 relative" style={{ backgroundImage: `url(${backgroundImage})` }}>
             <div className="bg-black/50 backdrop-blur-sm rounded-xl p-4">
                 <div className="flex justify-between items-start mb-4">
                     <div>
@@ -48,7 +43,17 @@ const CharacterView: React.FC<CharacterViewProps> = ({
                     onClick={onCharacterTap} // 親から渡された関数をonClickに設定
                     aria-label="Tap character"
                 >
-                    <img src={imagePath} alt={name} className="max-h-full object-contain drop-shadow-2xl" />
+                    <img 
+                        src={imagePath} 
+                        alt={name} 
+                        className="max-h-full object-contain drop-shadow-2xl"
+                        // 画像が存在しない場合のフォールバック
+                        onError={(e) => {
+                            const target = e.target as HTMLImageElement;
+                            target.onerror = null; // 無限ループを防ぐ
+                            target.src = '/assets/images/eggs/fallback_egg.png'; // 代替画像
+                        }}
+                    />
                 </div>
 
                 <ExpBarView currentExp={currentExp} maxExp={maxExp} />

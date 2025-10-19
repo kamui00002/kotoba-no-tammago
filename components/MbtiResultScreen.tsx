@@ -2,6 +2,7 @@ import React from 'react';
 import { useGame } from '../context/GameContext';
 import { GameState } from '../types';
 import { CHARACTER_DATA } from '../constants';
+import { getCharacterImage } from '../utils/imageUtils';
 
 const MbtiResultScreen: React.FC = () => {
     const { userProgress, setGameState } = useGame();
@@ -23,7 +24,7 @@ const MbtiResultScreen: React.FC = () => {
     }
 
     const characterInfo = CHARACTER_DATA[characterType];
-    const imagePath = `/assets/images/characters/${characterInfo.mbti.toLowerCase()}_${characterType}_idle.png`;
+    const imagePath = getCharacterImage(characterType, 'idle');
 
     return (
         // 1. 背景: キャラクターのテーマカラーのグラデーション

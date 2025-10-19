@@ -2,6 +2,8 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useGame } from '../context/GameContext';
 import { CHARACTER_DATA } from '../constants';
+import { getEggImage, getCharacterImage } from '../utils/imageUtils';
+import { EvolutionStage } from '../types';
 
 /**
  * @observableobject SwiftUIの `HomeViewModel` に相当するカスタムフック
@@ -33,24 +35,22 @@ export const useHomeScreen = () => {
      * 副作用（この場合はキャラクター画像の更新）を実行します。
      */
     useEffect(() => {
-        if (!characterInfo || !characterType) return;
+        if (!characterType) return;
 
-        const mbtiLower = characterInfo.mbti.toLowerCase();
-        const typeName = characterType;
         let imagePath = '';
         switch (evolutionStage) {
-            case 'egg':
-                imagePath = `/assets/images/eggs/${mbtiLower}_${typeName}_egg.png`;
+            case EvolutionStage.EGG:
+                imagePath = getEggImage(characterType);
                 break;
-            case 'child':
-                imagePath = `/assets/images/characters/${mbtiLower}_${typeName}_idle.png`;
+            case EvolutionStage.CHILD:
+                imagePath = getCharacterImage(characterType, 'idle');
                 break;
-            case 'adult':
-                imagePath = `/assets/images/characters/${mbtiLower}_${typeName}_evolve.png`;
+            case EvolutionStage.ADULT:
+                imagePath = getCharacterImage(characterType, 'evolve');
                 break;
         }
         setCharacterImage(imagePath);
-    }, [evolutionStage, characterType, characterInfo]);
+    }, [evolutionStage, characterType]);
 
     /**
      * @function onCharacterTap
@@ -63,13 +63,13 @@ export const useHomeScreen = () => {
      * これにより、「ハッピーな画像に一時的に変更し、元に戻す」というアニメーションを実現します。
      */
     const handleCharacterTap = useCallback(() => {
-        if (!characterInfo || !characterType || evolutionStage === 'egg') return;
+        if (!characterType || evolutionStage === EvolutionStage.EGG) return;
         
-        const mbtiLower = characterInfo.mbti.toLowerCase();
-        const typeName = characterType;
+        // 進化後はタップしても happy にはならない
+        if (evolutionStage === EvolutionStage.ADULT) return;
 
-        const idleImage = `/assets/images/characters/${mbtiLower}_${typeName}_idle.png`;
-        const happyImage = `/assets/images/characters/${mbtiLower}_${typeName}_happy.png`;
+        const idleImage = getCharacterImage(characterType, 'idle');
+        const happyImage = getCharacterImage(characterType, 'happy');
 
         // 1. "happy" 画像に切り替え
         setCharacterImage(happyImage);
@@ -79,7 +79,7 @@ export const useHomeScreen = () => {
             setCharacterImage(idleImage);
         }, 500);
         
-    }, [characterType, characterInfo, evolutionStage]);
+    }, [characterType, evolutionStage]);
 
     // このフックを使用するコンポーネントに、必要な状態と関数を返す
     return {

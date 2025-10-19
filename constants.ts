@@ -1,65 +1,74 @@
-import { CharacterType, MbtiType, EvolutionStage } from './types';
+// Fix: Replaced placeholder content with actual constant definitions.
+import { MbtiType, CharacterType, Difficulty } from './types';
 
+// MBTIタイプとキャラクタータイプのマッピング
 export const MBTI_CHARACTER_MAP: Record<MbtiType, CharacterType> = {
-    // Wizard Group
-    'INFP': CharacterType.WIZARD, 'ENFP': CharacterType.WIZARD, 'INFJ': CharacterType.WIZARD, 'ISFP': CharacterType.WIZARD,
-    // Knight Group
-    'ENTJ': CharacterType.KNIGHT, 'ESTJ': CharacterType.KNIGHT, 'INTJ': CharacterType.KNIGHT, 'ENFJ': CharacterType.KNIGHT,
-    // Fairy Group
-    'ISFJ': CharacterType.FAIRY, 'ESFJ': CharacterType.FAIRY, 'ISTJ': CharacterType.FAIRY,
-    // Inventor Group
-    'ENTP': CharacterType.INVENTOR, 'ESTP': CharacterType.INVENTOR, 'INTP': CharacterType.INVENTOR, 'ESFP': CharacterType.INVENTOR, 'ISTP': CharacterType.INVENTOR,
+    // 直感(N) + 感情(F)
+    'INFP': CharacterType.FAIRY,
+    'INFJ': CharacterType.FAIRY,
+    'ENFP': CharacterType.FAIRY,
+    'ENFJ': CharacterType.FAIRY,
+    // 直感(N) + 思考(T)
+    'INTP': CharacterType.WIZARD,
+    'INTJ': CharacterType.WIZARD,
+    'ENTP': CharacterType.WIZARD,
+    'ENTJ': CharacterType.WIZARD,
+    // 感覚(S) + 判断(J)
+    'ISFJ': CharacterType.KNIGHT,
+    'ISTJ': CharacterType.KNIGHT,
+    'ESFJ': CharacterType.KNIGHT,
+    'ESTJ': CharacterType.KNIGHT,
+    // 感覚(S) + 知覚(P)
+    'ISFP': CharacterType.INVENTOR,
+    'ISTP': CharacterType.INVENTOR,
+    'ESFP': CharacterType.INVENTOR,
+    'ESTP': CharacterType.INVENTOR,
 };
 
-// Simplified mapping for the 4 characters in the prompt
-export const SIMPLIFIED_MBTI_MAP: Record<string, CharacterType> = {
-    'INFP': CharacterType.WIZARD,
-    'ENTJ': CharacterType.KNIGHT,
-    'ISFJ': CharacterType.FAIRY,
-    'ENTP': CharacterType.INVENTOR,
-};
 
-export const CHARACTER_DATA: Record<CharacterType, { name: string, mbti: string, title: string, description: string, gradient: string }> = {
+// キャラクターごとの詳細データ
+export const CHARACTER_DATA = {
     [CharacterType.WIZARD]: {
-        name: '魔法使い',
-        mbti: 'INFP',
-        title: '夢見る魔法使い',
-        description: 'あなたの内なる世界の探求者。深い共感力と創造力で、仲間を癒やし、新たな可能性を見出します。',
-        gradient: 'from-purple-500 to-indigo-800'
+        name: '賢者見習い',
+        mbti: 'INTP', // 代表MBTI
+        title: '論理の魔術師',
+        description: '知的好奇心が強く、複雑な問題を分析するのが得意なあなたには、魔法の真理を探究する賢者がぴったりです。',
+        gradient: 'from-blue-800 to-purple-900',
     },
     [CharacterType.KNIGHT]: {
-        name: '騎士',
-        mbti: 'ENTJ',
-        title: '大胆不敵な騎士',
-        description: '生まれながらのリーダー。決断力と戦略的思考で、どんな困難も乗り越え、仲間を勝利へと導きます。',
-        gradient: 'from-red-600 to-gray-800'
+        name: '騎士見習い',
+        mbti: 'ISTJ',
+        title: '忠誠の守護者',
+        description: '責任感が強く、秩序と伝統を重んじるあなたには、王国を守る誇り高き騎士がぴったりです。',
+        gradient: 'from-gray-700 to-blue-800',
     },
     [CharacterType.FAIRY]: {
-        name: '妖精',
-        mbti: 'ISFJ',
-        title: '心優しき妖精',
-        description: '献身的な心を持つ守護者。思いやりと責任感で、仲間を支え、コミュニティに温かさをもたらします。',
-        gradient: 'from-emerald-400 to-teal-700'
+        name: '妖精見習い',
+        mbti: 'INFP',
+        title: '夢見る理想家',
+        description: '感受性豊かで、人々を癒し、調和を愛するあなたには、森の精霊と心を通わせる妖精がぴったりです。',
+        gradient: 'from-green-700 to-teal-800',
     },
     [CharacterType.INVENTOR]: {
-        name: '発明家',
-        mbti: 'ENTP',
-        title: '好奇心旺盛な発明家',
-        description: '知的な挑戦を愛する革新者。ユニークな視点と議論好きの一面で、世界に新しいアイデアを生み出します。',
-        gradient: 'from-yellow-400 to-orange-600'
+        name: '発明家見習い',
+        mbti: 'ESTP',
+        title: '好奇心の冒険家',
+        description: 'エネルギッシュで、新しいことに挑戦するのが大好きなあなたには、奇想天外な機械を作り出す発明家がぴったりです。',
+        gradient: 'from-orange-700 to-yellow-800',
     },
 };
 
-export const EVOLUTION_LEVELS: Record<EvolutionStage, number> = {
-    [EvolutionStage.EGG]: 1,
-    [EvolutionStage.CHILD]: 5,
-    [EvolutionStage.ADULT]: 15,
+// 進化に必要なレベル
+export const EVOLUTION_LEVELS = {
+    child: 5,
+    adult: 15,
 };
 
-export const XP_PER_CORRECT_ANSWER = {
-    beginner: 10,
-    intermediate: 15,
-    advanced: 20,
+// 難易度ごとの正解時の獲得XP
+export const XP_PER_CORRECT_ANSWER: Record<Difficulty, number> = {
+    [Difficulty.BEGINNER]: 10,
+    [Difficulty.INTERMEDIATE]: 20,
+    [Difficulty.ADVANCED]: 30,
 };
 
 export const QUIZ_LENGTH = 10;

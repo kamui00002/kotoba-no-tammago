@@ -1,99 +1,76 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { useGame } from '../context/GameContext';
-import { Word, QuizQuestion } from '../types';
-import { QUIZ_LENGTH } from '../constants';
-import { generateQuizQuestions } from '../utils/wordUtils';
+// Fix: Replaced placeholder content with a functional Quiz component.
+import React from 'react';
+import { useQuiz } from '../hooks/useQuiz';
 
 const Quiz: React.FC = () => {
-    const { currentDifficulty, finishQuiz } = useGame();
-    const [questions, setQuestions] = useState<QuizQuestion[]>([]);
-    const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-    const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
-    const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
-    const [score, setScore] = useState(0);
-    const [isLoading, setIsLoading] = useState(true);
+    const { 
+        isLoading, 
+        questions, 
+        currentIndex, 
+        currentQuestion, 
+        handleAnswer,
+        selectedAnswer,
+        isCorrect
+    } = useQuiz();
 
-    useEffect(() => {
-        if (!currentDifficulty) return;
-        setIsLoading(true);
-        fetch('/assets/data/words.json')
-            .then(res => res.json())
-            .then((allWords: Word[]) => {
-                const newQuestions = generateQuizQuestions(allWords, currentDifficulty, QUIZ_LENGTH);
-                setQuestions(newQuestions);
-                setIsLoading(false);
-            })
-            .catch(err => {
-                console.error("Failed to load words:", err);
-                setIsLoading(false);
-            });
-    }, [currentDifficulty]);
+    if (isLoading) {
+        return <div className="flex justify-center items-center h-screen bg-slate-800 text-white">Loading quiz...</div>;
+    }
 
-    const handleAnswer = (answer: string) => {
-        if (selectedAnswer) return; // Prevent multiple answers
+    if (!currentQuestion) {
+        return <div className="flex justify-center items-center h-screen bg-slate-800 text-white">Could not load quiz.</div>;
+    }
 
-        setSelectedAnswer(answer);
-        const correct = answer === questions[currentQuestionIndex].meaning;
-        setIsCorrect(correct);
-        if (correct) {
-            setScore(prev => prev + 1);
+    const getButtonClass = (option: string) => {
+        if (!selectedAnswer) {
+            return 'bg-white hover:bg-gray-200 text-slate-800';
         }
+        const isCorrectAnswer = option === currentQuestion.meaning;
+        const isSelected = option === selectedAnswer;
 
-        setTimeout(() => {
-            const nextQuestionIndex = currentQuestionIndex + 1;
-            if (nextQuestionIndex < questions.length) {
-                setCurrentQuestionIndex(nextQuestionIndex);
-                setSelectedAnswer(null);
-                setIsCorrect(null);
-            } else {
-                finishQuiz(score + (correct ? 1 : 0), questions.length);
-            }
-        }, 1500);
+        if (isCorrectAnswer) {
+            return 'bg-green-500 text-white'; // Correct answer is always green
+        }
+        if (isSelected && !isCorrect) {
+            return 'bg-red-500 text-white'; // Selected wrong answer is red
+        }
+        return 'bg-white text-slate-800 opacity-50'; // Other options
     };
 
-    if (isLoading || questions.length === 0) {
-        return <div className="flex justify-center items-center h-screen bg-slate-800 text-xl">Generating Quiz...</div>;
-    }
-    
-    const currentQuestion = questions[currentQuestionIndex];
-    const progressPercentage = ((currentQuestionIndex + 1) / questions.length) * 100;
 
     return (
-        <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-slate-900 to-gray-800 p-4">
-            <div className="w-full max-w-2xl bg-white/10 backdrop-blur-md rounded-2xl shadow-2xl p-8">
-                <div className="flex justify-between items-center mb-4">
-                    <h2 className="text-2xl font-bold text-cyan-300">英単語クイズ</h2>
-                    <div className="text-lg font-semibold">{score} / {questions.length}</div>
-                </div>
-                <div className="w-full bg-black/20 rounded-full h-2.5 mb-6">
-                    <div className="bg-cyan-400 h-2.5 rounded-full" style={{ width: `${progressPercentage}%` }}></div>
+        <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-blue-900 to-gray-900 p-4 font-sans text-white">
+            <div className="w-full max-w-lg bg-white/10 backdrop-blur-md rounded-2xl shadow-2xl p-6">
+                <header className="flex justify-between items-center mb-4">
+                    <p className="font-bold text-cyan-200">Question {currentIndex + 1}/{questions.length}</p>
+                    <button className="text-cyan-200 text-2xl font-mono" aria-label="Close" onClick={() => { /* Implement if needed */ }}>
+                        &times;
+                    </button>
+                </header>
+
+                <div className="w-full bg-gray-700 rounded-full h-2.5 mb-6">
+                    <div 
+                        className="bg-cyan-400 h-2.5 rounded-full transition-all duration-300" 
+                        style={{ width: `${((currentIndex + 1) / questions.length) * 100}%` }}
+                    ></div>
                 </div>
 
-                <div className="bg-black/20 p-8 rounded-lg mb-6 text-center">
-                    <h3 className="text-4xl font-bold tracking-widest">{currentQuestion.word}</h3>
+                <div className="text-center mb-8 p-6 bg-black/30 rounded-lg min-h-[120px] flex flex-col items-center justify-center">
+                    <p className="text-sm text-gray-400 mb-2">What is the meaning of:</p>
+                    <h2 className="text-4xl font-bold tracking-wider">{currentQuestion.word}</h2>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {currentQuestion.options.map(option => {
-                        const isSelected = selectedAnswer === option;
-                        let buttonClass = 'bg-gray-700 hover:bg-gray-600';
-                        if (isSelected) {
-                            buttonClass = isCorrect ? 'bg-green-600' : 'bg-red-600';
-                        } else if (selectedAnswer && option === currentQuestion.meaning) {
-                             buttonClass = 'bg-green-600';
-                        }
-
-                        return (
-                            <button
-                                key={option}
-                                onClick={() => handleAnswer(option)}
-                                disabled={!!selectedAnswer}
-                                className={`w-full text-white font-medium py-4 px-6 rounded-lg transition-all duration-300 ${buttonClass} ${selectedAnswer ? '' : 'transform hover:scale-105'}`}
-                            >
-                                {option}
-                            </button>
-                        );
-                    })}
+                    {currentQuestion.options.map((option, index) => (
+                         <button 
+                            key={index}
+                            onClick={() => handleAnswer(option)}
+                            disabled={!!selectedAnswer}
+                            className={`w-full font-bold py-4 px-6 rounded-lg shadow-md transition-all duration-200 transform ${!selectedAnswer ? 'hover:scale-105' : ''} ${getButtonClass(option)}`}
+                        >
+                            {option}
+                        </button>
+                    ))}
                 </div>
             </div>
         </div>
