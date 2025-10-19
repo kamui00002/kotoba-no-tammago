@@ -63,6 +63,7 @@ export interface UserProgress {
     characterType: CharacterType | null;
     level: number;
     xp: number;
+    xpToNextLevel: number; // 次のレベルに必要なXP
     evolutionStage: EvolutionStage;
 }
 

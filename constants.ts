@@ -56,10 +56,6 @@ export const EVOLUTION_LEVELS: Record<EvolutionStage, number> = {
     [EvolutionStage.ADULT]: 15,
 };
 
-export const XP_PER_LEVEL = (level: number): number => {
-    return 100 + (level - 1) * 50;
-};
-
 export const XP_PER_CORRECT_ANSWER = {
     beginner: 10,
     intermediate: 15,

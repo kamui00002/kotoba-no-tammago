@@ -1,7 +1,7 @@
 
 import React, { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react';
 import { UserProgress, GameState, MbtiType, CharacterType, EvolutionStage, Difficulty, QuizResult } from '../types';
-import { MBTI_CHARACTER_MAP, XP_PER_LEVEL, EVOLUTION_LEVELS, XP_PER_CORRECT_ANSWER } from '../constants';
+import { MBTI_CHARACTER_MAP, EVOLUTION_LEVELS, XP_PER_CORRECT_ANSWER } from '../constants';
 
 interface GameContextType {
     gameState: GameState;
@@ -14,6 +14,7 @@ interface GameContextType {
     startQuiz: (difficulty: Difficulty) => void;
     quizResult: QuizResult | null;
     finishQuiz: (score: number, totalQuestions: number) => void;
+    addExperience: (amount: number) => void;
 }
 
 const GameContext = createContext<GameContextType | undefined>(undefined);
@@ -23,6 +24,7 @@ const initialProgress: UserProgress = {
     characterType: null,
     level: 1,
     xp: 0,
+    xpToNextLevel: 100,
     evolutionStage: EvolutionStage.EGG,
 };
 
@@ -37,7 +39,12 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         try {
             const savedProgress = localStorage.getItem('userProgress');
             if (savedProgress) {
-                setUserProgressState(JSON.parse(savedProgress));
+                const parsed = JSON.parse(savedProgress);
+                // 古いセーブデータとの互換性のため、xpToNextLevelがない場合は初期値を設定
+                if (!parsed.xpToNextLevel) {
+                    parsed.xpToNextLevel = 100 + (parsed.level - 1) * 50;
+                }
+                setUserProgressState(parsed);
             }
         } catch (error) {
             console.error("Failed to load user progress:", error);
@@ -54,6 +61,34 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             console.error("Failed to save user progress:", error);
         }
     }, []);
+    
+    const addExperience = useCallback((amount: number) => {
+        let newXp = userProgress.xp + amount;
+        let newLevel = userProgress.level;
+        let newXpToNextLevel = userProgress.xpToNextLevel;
+
+        while (newXp >= newXpToNextLevel) {
+            newXp -= newXpToNextLevel;
+            newLevel++;
+            newXpToNextLevel = Math.floor(newXpToNextLevel * 1.5);
+        }
+
+        let newEvolutionStage = userProgress.evolutionStage;
+        if (newLevel >= EVOLUTION_LEVELS.adult) {
+            newEvolutionStage = EvolutionStage.ADULT;
+        } else if (newLevel >= EVOLUTION_LEVELS.child) {
+            newEvolutionStage = EvolutionStage.CHILD;
+        }
+
+        setUserProgress({
+            ...userProgress,
+            xp: newXp,
+            level: newLevel,
+            xpToNextLevel: newXpToNextLevel,
+            evolutionStage: newEvolutionStage,
+        });
+
+    }, [userProgress, setUserProgress]);
 
     const completeMbtiTest = useCallback((mbtiType: MbtiType) => {
         const characterType = MBTI_CHARACTER_MAP[mbtiType] || CharacterType.FAIRY;
@@ -62,6 +97,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             characterType,
             level: 1,
             xp: 0,
+            xpToNextLevel: 100,
             evolutionStage: EvolutionStage.EGG,
         };
         setUserProgress(newProgress);
@@ -78,33 +114,11 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
         const xpGained = score * XP_PER_CORRECT_ANSWER[currentDifficulty];
         setQuizResult({ score, totalQuestions, xpGained });
-
-        let newXp = userProgress.xp + xpGained;
-        let newLevel = userProgress.level;
-        let xpForNextLevel = XP_PER_LEVEL(newLevel);
-
-        while (newXp >= xpForNextLevel) {
-            newXp -= xpForNextLevel;
-            newLevel++;
-            xpForNextLevel = XP_PER_LEVEL(newLevel);
-        }
-
-        let newEvolutionStage = userProgress.evolutionStage;
-        if (newLevel >= EVOLUTION_LEVELS.adult) {
-            newEvolutionStage = EvolutionStage.ADULT;
-        } else if (newLevel >= EVOLUTION_LEVELS.child) {
-            newEvolutionStage = EvolutionStage.CHILD;
-        }
-
-        setUserProgress({
-            ...userProgress,
-            xp: newXp,
-            level: newLevel,
-            evolutionStage: newEvolutionStage,
-        });
+        
+        addExperience(xpGained);
 
         setGameState(GameState.RESULT);
-    }, [currentDifficulty, userProgress, setUserProgress]);
+    }, [currentDifficulty, addExperience]);
 
     const value = {
         gameState,
@@ -117,6 +131,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         startQuiz,
         quizResult,
         finishQuiz,
+        addExperience,
     };
 
     return <GameContext.Provider value={value}>{children}</GameContext.Provider>;
