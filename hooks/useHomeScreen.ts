@@ -12,28 +12,21 @@ import { EvolutionStage } from '../types';
  * これにより、UIコンポーネント（HomeScreen.tsx）は表示に専念でき、コードの見通しが良くなります。
  */
 export const useHomeScreen = () => {
-    // グローバルなゲーム状態とロジックを取得
     const { userProgress, addExperience } = useGame();
     const { characterType, evolutionStage } = userProgress;
 
-    /**
-     * @published SwiftUIの `@Published var characterImage: String` に相当
-     *
-     * `useState` はReactのフックで、コンポーネントの状態を管理します。
-     * `characterImage` の値が `setCharacterImage` によって変更されると、
-     * このフックを使用しているコンポーネントが自動的に再レンダリングされます。
-     */
     const [characterImage, setCharacterImage] = useState('');
+    
+    /**
+     * @published @state タップアニメーション用の状態
+     * SwiftUIの `@State private var isHappy = false` に相当します。
+     * この値が変更されると、コンポーネントが再レンダリングされ、
+     * アニメーション用のCSSクラスが適用/削除されます。
+     */
+    const [isTapped, setIsTapped] = useState(false);
 
     const characterInfo = characterType ? CHARACTER_DATA[characterType] : null;
 
-    /**
-     * @function updateCharacterImage / init
-     * SwiftUIの `updateCharacterImage()` や `init()` での初期設定に相当します。
-     *
-     * `useEffect` フックは、特定のデータ（この場合は `evolutionStage`）が変更されたときに
-     * 副作用（この場合はキャラクター画像の更新）を実行します。
-     */
     useEffect(() => {
         if (!characterType) return;
 
@@ -54,39 +47,40 @@ export const useHomeScreen = () => {
 
     /**
      * @function onCharacterTap
-     * SwiftUIの `onCharacterTap()` に相当します。
-     *
-     * `useCallback` は関数の再生成を防ぎ、パフォーマンスを最適化します。
-     *
-     * @async_dispatch SwiftUIの `DispatchQueue.main.asyncAfter` に相当
-     * `setTimeout` は、指定した時間（500ms）後に関数を実行するJavaScriptの標準的な非同期処理です。
-     * これにより、「ハッピーな画像に一時的に変更し、元に戻す」というアニメーションを実現します。
+     * SwiftUIの `onTapGesture` 内のロジックに相当します。
      */
     const handleCharacterTap = useCallback(() => {
-        if (!characterType || evolutionStage === EvolutionStage.EGG) return;
+        setIsTapped(true);
         
-        // 進化後はタップしても happy にはならない
-        if (evolutionStage === EvolutionStage.ADULT) return;
+        // アニメーション用のクラスを適用した後、少ししてから解除する
+        setTimeout(() => setIsTapped(false), 300);
+
+        // タップ時の画像切り替えロジック
+        if (!characterType || evolutionStage === EvolutionStage.EGG || evolutionStage === EvolutionStage.ADULT) {
+            return;
+        }
 
         const idleImage = getCharacterImage(characterType, 'idle');
         const happyImage = getCharacterImage(characterType, 'happy');
 
-        // 1. "happy" 画像に切り替え
         setCharacterImage(happyImage);
 
-        // 2. 0.5秒後に "idle" 画像に戻す
+        /**
+         * @async_dispatch SwiftUIの `DispatchQueue.main.asyncAfter` に相当
+         * 指定した時間（500ms）後に関数を実行し、画像を元に戻します。
+         */
         setTimeout(() => {
             setCharacterImage(idleImage);
         }, 500);
         
     }, [characterType, evolutionStage]);
 
-    // このフックを使用するコンポーネントに、必要な状態と関数を返す
     return {
         userProgress,
         characterInfo,
         characterImage,
+        isTapped, // Viewに渡すための状態
         handleCharacterTap,
-        addExperience, // GameContextから受け取った関数をそのまま渡す
+        addExperience,
     };
 };

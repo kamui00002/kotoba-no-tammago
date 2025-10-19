@@ -16,48 +16,77 @@
       }
     </script>
     <style>
+      /* --- 既存のアニメーション --- */
       @keyframes pulse-icon {
-        0%, 100% {
-          transform: scale(1);
-        }
-        50% {
-          transform: scale(1.1);
-        }
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.1); }
       }
-      .animate-pulse-icon {
-        animation: pulse-icon 2s ease-in-out infinite;
-      }
+      .animate-pulse-icon { animation: pulse-icon 2s ease-in-out infinite; }
+
       @keyframes blink-dot {
-        0%, 100% {
-          opacity: 0.2;
-        }
-        20% {
-          opacity: 1;
-        }
+        0%, 100% { opacity: 0.2; }
+        20% { opacity: 1; }
       }
-      .animate-blink-dot-1 {
-        animation: blink-dot 1.4s infinite;
-        animation-delay: 0s;
-      }
-      .animate-blink-dot-2 {
-        animation: blink-dot 1.4s infinite;
-        animation-delay: 0.2s;
-      }
-      .animate-blink-dot-3 {
-        animation: blink-dot 1.4s infinite;
-        animation-delay: 0.4s;
-      }
+      .animate-blink-dot-1 { animation: blink-dot 1.4s infinite; animation-delay: 0s; }
+      .animate-blink-dot-2 { animation: blink-dot 1.4s infinite; animation-delay: 0.2s; }
+      .animate-blink-dot-3 { animation: blink-dot 1.4s infinite; animation-delay: 0.4s; }
+      
       @keyframes bounce-char {
-        0%, 100% {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-20px); }
+      }
+      .animate-bounce-char { animation: bounce-char 3s ease-in-out infinite; }
+
+      /* --- 新しく追加したアニメーション --- */
+      
+      /**
+       * @animation 画面遷移用: フェードイン
+       * SwiftUIの .transition(.opacity.combined(with: .move(edge: .bottom))) に相当
+       */
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
           transform: translateY(0);
         }
-        50% {
-          transform: translateY(-20px);
+      }
+      .animate-fadeIn {
+        animation: fadeIn 0.5s ease-out forwards;
+      }
+
+      /**
+       * @animation キャラクタータップ用: プルンと揺れる
+       * SwiftUIの .animation(.spring()) を使った動きに相当
+       */
+      @keyframes wiggle {
+        0%, 100% { transform: rotate(-1deg) scale(1); }
+        50% { transform: rotate(1deg) scale(1.05); }
+      }
+      .animate-wiggle {
+        animation: wiggle 0.3s ease-in-out;
+      }
+
+      /**
+       * @animation レベルアップ用: キラキラパーティクル
+       * SwiftUIのカスタム ParticleView に相当
+       */
+      @keyframes sparkle-out {
+        0% {
+          transform: scale(0) rotate(0deg);
+          opacity: 1;
+        }
+        100% {
+          transform: scale(1.5) rotate(180deg);
+          opacity: 0;
         }
       }
-      .animate-bounce-char {
-        animation: bounce-char 3s ease-in-out infinite;
+      .animate-sparkle {
+        animation: sparkle-out 1s ease-out forwards;
       }
+
     </style>
   </head>
   <body class="bg-slate-900 text-white">

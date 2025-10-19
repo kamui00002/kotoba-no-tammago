@@ -1,6 +1,7 @@
 import React from 'react';
 import ExpBarView from './ExpBarView';
-import { MbtiType, CharacterType } from '../types';
+import ParticleEffect from './ParticleEffect'; // パーティクルコンポーネントをインポート
+import { MbtiType, CharacterType, EvolutionStage } from '../types';
 import { getBackgroundImage } from '../utils/imageUtils';
 
 interface CharacterViewProps {
@@ -12,6 +13,9 @@ interface CharacterViewProps {
     imagePath: string;
     onCharacterTap: () => void;
     characterType: CharacterType;
+    evolutionStage: EvolutionStage;
+    isTapped: boolean; // タップアニメーション用の状態
+    justLeveledUp: boolean; // レベルアップエフェクト用の状態
 }
 
 const CharacterView: React.FC<CharacterViewProps> = ({
@@ -23,9 +27,19 @@ const CharacterView: React.FC<CharacterViewProps> = ({
     imagePath,
     onCharacterTap,
     characterType,
+    evolutionStage,
+    isTapped,
+    justLeveledUp,
 }) => {
     
     const backgroundImage = getBackgroundImage(characterType);
+
+    // @animation タップ時のアニメーション用CSSクラスを決定するロジック
+    // SwiftUIの .scaleEffect(isHappy ? 1.1 : 1.0) に相当
+    const getTapAnimationClass = () => {
+        if (!isTapped) return '';
+        return evolutionStage === EvolutionStage.EGG ? 'animate-wiggle' : 'scale-110';
+    };
 
     return (
         <div className="w-full bg-cover bg-center bg-no-repeat rounded-2xl shadow-2xl p-6 relative" style={{ backgroundImage: `url(${backgroundImage})` }}>
@@ -39,21 +53,22 @@ const CharacterView: React.FC<CharacterViewProps> = ({
                 </div>
 
                 <div 
-                    className="flex justify-center items-center my-6 h-80 cursor-pointer"
-                    onClick={onCharacterTap} // 親から渡された関数をonClickに設定
+                    className="relative flex justify-center items-center my-6 h-80 cursor-pointer group"
+                    onClick={onCharacterTap}
                     aria-label="Tap character"
                 >
                     <img 
                         src={imagePath} 
                         alt={name} 
-                        className="max-h-full object-contain drop-shadow-2xl"
-                        // 画像が存在しない場合のフォールバック
+                        className={`max-h-full object-contain drop-shadow-2xl transition-transform duration-300 ${getTapAnimationClass()}`}
                         onError={(e) => {
                             const target = e.target as HTMLImageElement;
-                            target.onerror = null; // 無限ループを防ぐ
-                            target.src = '/assets/images/eggs/fallback_egg.png'; // 代替画像
+                            target.onerror = null;
+                            target.src = '/assets/images/eggs/fallback_egg.png';
                         }}
                     />
+                    {/* @animation レベルアップ時にパーティクルエフェクトを表示 */}
+                    {justLeveledUp && <ParticleEffect />}
                 </div>
 
                 <ExpBarView currentExp={currentExp} maxExp={maxExp} />

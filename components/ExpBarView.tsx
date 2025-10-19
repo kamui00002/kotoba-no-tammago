@@ -18,53 +18,34 @@ interface ExpBarViewProps {
  * 必要なデータをPropsとして受け取ることで、アプリ内のどこでも同じUIを再利用できます。
  */
 const ExpBarView: React.FC<ExpBarViewProps> = ({ currentExp, maxExp }) => {
-    /**
-     * @computed_property SwiftUIの `var progress: CGFloat` に相当する計算
-     *
-     * 受け取った経験値から、プログレスバーの幅をパーセンテージで計算します。
-     * 0で割ることを防ぐためのチェックも入れています。
-     */
     const progressPercentage = maxExp > 0 ? (currentExp / maxExp) * 100 : 0;
 
     return (
-        // SwiftUIの `VStack` のように、要素を縦に並べるためのコンテナ
         <div>
-            {/* 1. テキスト表示: "⭐ 120 / 200 EXP" */}
             <div className="flex justify-between text-sm font-medium text-gray-200 mb-1">
                 <span>⭐ XP</span>
                 <span>{currentExp} / {maxExp}</span>
             </div>
-
             {/* 
-             * 2. バーの表示エリア
-             * SwiftUIの `ZStack` と `GeometryReader` の組み合わせに相当します。
+             * @animation 経験値バーのアニメーション
              *
-             * - まず背景となる灰色のバーを配置します。
-             * - その上に、進捗を示すグラデーションのバーを重ねます。
-             * - `w-full` (width: 100%) が `GeometryReader` のように親の幅いっぱいに広がる役割を担います。
+             * 1. 背景バー (ZStackの奥)
+             * `w-full bg-gray-700` が背景のバーを定義します。
+             * `w-full` は SwiftUI の `GeometryReader` のように親の幅いっぱいに広がる役割をします。
+             *
+             * 2. 進捗バー (ZStackの手前)
+             * `style={{ width: ... }}` で進捗率に応じてバーの幅を動的に変更します。
+             *
+             * 3. アニメーションの適用
+             * `transition-all duration-500` というクラスが、SwiftUIの 
+             * `.animation(.easeInOut(duration: 0.5), value: animatedProgress)` に相当します。
+             * これにより、`width`プロパティが変更されるたびに、0.5秒かけて滑らかに変化します。
+             * Reactでは、このように「状態変化」と「CSSトランジション」を組み合わせるのが一般的なアニメーション実装です。
              */}
             <div className="w-full bg-gray-700 rounded-full h-4 relative">
-                {/* 
-                 * 背景バー (SwiftUIの `Rectangle().fill(.gray)`)
-                 * この要素自体は、上のdivが背景色を持っているので不要ですが、
-                 * 構造を明確にするためにコメントとして残します。
-                 */}
-
-                {/*
-                 * 進捗バー (SwiftUIの `Rectangle().fill(LinearGradient(...)).frame(width: ...)` )
-                 *
-                 * - `style={{ width: `${progressPercentage}%` }}`:
-                 *   これが動的なサイズ指定の核心部分です。計算したパーセンテージを直接widthに適用します。
-                 *   SwiftUIの `.frame(width: geometry.size.width * progress)` と同じ考え方です。
-                 *
-                 * - `transition-all duration-500`:
-                 *   これがアニメーションの指定です。widthプロパティが変更されたときに、
-                 *   0.5秒かけて滑らかに変化します。SwiftUIの `withAnimation(.easeInOut(duration: 0.5))` に相当します。
-                 */}
                 <div
                     className="bg-gradient-to-r from-cyan-400 to-blue-500 h-4 rounded-full transition-all duration-500"
                     style={{ width: `${progressPercentage}%` }}
-                    // アクセシビリティのためのARIA属性
                     role="progressbar"
                     aria-valuenow={currentExp}
                     aria-valuemin={0}

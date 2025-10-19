@@ -10,6 +10,7 @@ const HomeScreen: React.FC = () => {
         userProgress,
         characterInfo,
         characterImage,
+        isTapped,
         handleCharacterTap,
         addExperience,
     } = useHomeScreen();
@@ -46,6 +47,9 @@ const HomeScreen: React.FC = () => {
                         imagePath={characterImage}
                         onCharacterTap={handleCharacterTap}
                         characterType={userProgress.characterType!}
+                        evolutionStage={userProgress.evolutionStage}
+                        isTapped={isTapped}
+                        justLeveledUp={!!userProgress.justLeveledUp}
                     />
 
                     {/* 3-2. クイズ開始ボタン */}
