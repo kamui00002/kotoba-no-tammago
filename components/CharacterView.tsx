@@ -31,7 +31,7 @@ const CharacterView: React.FC<CharacterViewProps> = ({
     isTapped,
     justLeveledUp,
 }) => {
-    
+
     const backgroundImage = getBackgroundImage(characterType);
 
     // @animation タップ時のアニメーション用CSSクラスを決定するロジック
@@ -52,21 +52,27 @@ const CharacterView: React.FC<CharacterViewProps> = ({
                     <div className="bg-purple-600 text-white text-sm font-bold px-3 py-1 rounded-full">{mbtiType}</div>
                 </div>
 
-                <div 
+                <div
                     className="relative flex justify-center items-center my-6 h-80 cursor-pointer group"
                     onClick={onCharacterTap}
                     aria-label="Tap character"
                 >
-                    <img 
-                        src={imagePath} 
-                        alt={name} 
-                        className={`max-h-full object-contain drop-shadow-2xl transition-transform duration-300 ${getTapAnimationClass()}`}
-                        onError={(e) => {
-                            const target = e.target as HTMLImageElement;
-                            target.onerror = null;
-                            target.src = '/assets/images/eggs/fallback_egg.png';
-                        }}
-                    />
+                    {imagePath ? (
+                        <img
+                            src={imagePath}
+                            alt={name}
+                            className={`max-h-full object-contain drop-shadow-2xl transition-transform duration-300 ${getTapAnimationClass()}`}
+                            onError={(e) => {
+                                const target = e.target as HTMLImageElement;
+                                target.onerror = null;
+                                target.src = '/assets/images/eggs/fallback_egg.png';
+                            }}
+                        />
+                    ) : (
+                        <div className="w-32 h-32 bg-gray-300 rounded-full flex items-center justify-center text-4xl">
+                            🥚
+                        </div>
+                    )}
                     {/* @animation レベルアップ時にパーティクルエフェクトを表示 */}
                     {justLeveledUp && <ParticleEffect />}
                 </div>

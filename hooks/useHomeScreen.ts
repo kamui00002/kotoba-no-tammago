@@ -16,7 +16,7 @@ export const useHomeScreen = () => {
     const { characterType, evolutionStage } = userProgress;
 
     const [characterImage, setCharacterImage] = useState('');
-    
+
     /**
      * @published @state タップアニメーション用の状態
      * SwiftUIの `@State private var isHappy = false` に相当します。
@@ -28,7 +28,10 @@ export const useHomeScreen = () => {
     const characterInfo = characterType ? CHARACTER_DATA[characterType] : null;
 
     useEffect(() => {
-        if (!characterType) return;
+        if (!characterType) {
+            setCharacterImage('');
+            return;
+        }
 
         let imagePath = '';
         switch (evolutionStage) {
@@ -41,6 +44,9 @@ export const useHomeScreen = () => {
             case EvolutionStage.ADULT:
                 imagePath = getCharacterImage(characterType, 'evolve');
                 break;
+            default:
+                imagePath = getEggImage(characterType);
+                break;
         }
         setCharacterImage(imagePath);
     }, [evolutionStage, characterType]);
@@ -51,7 +57,7 @@ export const useHomeScreen = () => {
      */
     const handleCharacterTap = useCallback(() => {
         setIsTapped(true);
-        
+
         // アニメーション用のクラスを適用した後、少ししてから解除する
         setTimeout(() => setIsTapped(false), 300);
 
@@ -72,7 +78,7 @@ export const useHomeScreen = () => {
         setTimeout(() => {
             setCharacterImage(idleImage);
         }, 500);
-        
+
     }, [characterType, evolutionStage]);
 
     return {

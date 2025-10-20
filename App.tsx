@@ -67,20 +67,9 @@ const AppRouter: React.FC = () => {
     };
 
     return (
-        <main className="min-h-screen w-full font-sans">
-             {/* 
-              * @animation 画面遷移アニメーションの実装
-              * SwiftUIの .transition(.move(edge: .trailing)).animation(.easeInOut, value: showNextScreen) に相当
-              *
-              * Reactでは、コンポーネントの `key` を変更すると、Reactはそのコンポーネントを
-              * 「新しい別のインスタンス」として扱い、古いものを破棄して新しいものをマウントします。
-              * この性質を利用し、`gameState` を `key` に設定することで、画面が切り替わるたびに
-              * 新しい `div` がマウントされ、`animate-fadeIn` クラスによってアニメーションが再生されます。
-              */}
-            <div key={gameState} className="animate-fadeIn">
-                 {renderContent()}
-            </div>
-        </main>
+        <div key={gameState} className="animate-fadeIn">
+            {renderContent()}
+        </div>
     );
 };
 

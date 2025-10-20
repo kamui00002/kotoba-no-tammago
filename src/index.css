@@ -1,0 +1,457 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* フォント設定 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Hiragino Kaku Gothic Pro', 'メイリオ', sans-serif;
+    background: linear-gradient(135deg, #f5f0ff 0%, #e8d4ff 100%);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+/* メインコンテナ */
+.phone-container {
+    width: 390px;
+    height: 844px;
+    background: white;
+    border-radius: 40px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    overflow: hidden;
+    position: relative;
+}
+
+/* ホーム画面の背景 */
+.home-screen {
+    background-image: linear-gradient(to bottom, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.85) 60px, rgba(255,255,255,0.7) 200px, rgba(255,255,255,0.85) 500px, rgba(255,255,255,0.95) 100%), linear-gradient(135deg, #1a0033 0%, #4a148c 50%, #7b1fa2 100%);
+    min-height: 100vh;
+}
+
+/* ヘッダー */
+.home-header {
+    height: 60px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+    background: rgba(255,255,255,0.9);
+}
+
+.icon {
+    font-size: 24px;
+    cursor: pointer;
+    position: relative;
+    z-index: 100;
+    padding: 8px;
+    border-radius: 50%;
+    transition: background-color 0.3s;
+}
+
+.icon:hover {
+    background-color: rgba(0,0,0,0.1);
+}
+
+/* キャラクター表示 */
+.character-display {
+    width: 250px;
+    height: 250px;
+    margin: 0 auto 20px;
+    background: #B8A4E8;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 80px;
+    cursor: pointer;
+    transition: transform 0.3s;
+}
+
+.character-display:hover {
+    transform: scale(1.05);
+}
+
+/* 経験値バー */
+.exp-container {
+    margin: 20px 0;
+}
+
+.exp-bar {
+    width: 100%;
+    height: 20px;
+    background: #f0f0f0;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 8px;
+}
+
+.exp-progress {
+    height: 100%;
+    background: linear-gradient(90deg, #B8A4E8 0%, #9B7ED9 100%);
+    transition: width 1s;
+}
+
+.exp-text {
+    color: #666;
+    font-size: 14px;
+    text-align: center;
+}
+
+/* クイズ開始ボタン */
+.quiz-start-button {
+    width: 85%;
+    margin: 20px auto;
+    padding: 18px;
+    background: linear-gradient(135deg, #9B7ED9 0%, #B8A4E8 100%);
+    color: white;
+    border: none;
+    border-radius: 30px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    z-index: 100;
+    position: relative;
+    display: block;
+    transition: all 0.3s;
+}
+
+.quiz-start-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(155,126,217,0.5);
+}
+
+.quiz-start-button:active {
+    transform: translateY(0);
+    box-shadow: 0 5px 15px rgba(155,126,217,0.4);
+}
+
+/* 統計情報 */
+.stats {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    margin-top: 20px;
+    color: #888;
+    font-size: 14px;
+}
+
+/* モーダル */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(5px);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    padding: 20px;
+}
+
+.modal.active {
+    display: flex;
+}
+
+.modal-content {
+    background: linear-gradient(135deg, #1a0033 0%, #4a148c 50%, #7b1fa2 100%);
+    border-radius: 30px;
+    width: 100%;
+    max-width: 350px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 25px;
+    border-bottom: 1px solid rgba(255,255,255,0.2);
+}
+
+.modal-title {
+    font-size: 24px;
+    font-weight: bold;
+    color: white;
+}
+
+.modal-close {
+    font-size: 28px;
+    color: white;
+    cursor: pointer;
+    background: none;
+    border: none;
+    opacity: 0.8;
+    transition: opacity 0.3s;
+}
+
+.modal-close:hover {
+    opacity: 1;
+}
+
+.modal-body {
+    padding: 20px;
+}
+
+.modal-section {
+    background: rgba(255,255,255,0.1);
+    border-radius: 15px;
+    padding: 20px;
+    margin-bottom: 15px;
+}
+
+.modal-section-title {
+    font-size: 16px;
+    font-weight: bold;
+    color: #E8D4FF;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.modal-item {
+    background: rgba(0,0,0,0.2);
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 10px;
+}
+
+.modal-item:last-child {
+    margin-bottom: 0;
+}
+
+.modal-label {
+    font-size: 14px;
+    color: #B8A4E8;
+    margin-bottom: 5px;
+}
+
+.modal-value {
+    font-size: 16px;
+    color: white;
+    font-weight: 600;
+}
+
+.modal-button {
+    background: linear-gradient(135deg, #9B7ED9 0%, #B8A4E8 100%);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 12px 20px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s;
+    margin-top: 10px;
+    width: 100%;
+}
+
+.modal-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(155,126,217,0.5);
+}
+
+.modal-button.danger {
+    background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%);
+}
+
+.modal-button.danger:hover {
+    box-shadow: 0 5px 15px rgba(220,38,38,0.5);
+}
+
+.modal-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.debug-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.debug-buttons .modal-button {
+    width: auto;
+    flex: 1;
+}
+
+/* 統計モーダル用のスタイル */
+.stats-modal .modal-content {
+    background: linear-gradient(135deg, #1e3a8a 0%, #4c1d95 100%);
+}
+
+.stats-card {
+    background: rgba(255,255,255,0.1);
+    border-radius: 15px;
+    padding: 20px;
+    margin-bottom: 15px;
+}
+
+.stats-card-title {
+    font-size: 16px;
+    font-weight: bold;
+    color: #93c5fd;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.stat-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.stat-row:last-child {
+    border-bottom: none;
+}
+
+.stat-label {
+    font-size: 14px;
+    color: #cbd5e1;
+}
+
+.stat-value {
+    font-size: 18px;
+    font-weight: bold;
+    color: white;
+}
+
+.progress-bar-container {
+    margin: 10px 0;
+}
+
+.progress-label {
+    font-size: 12px;
+    color: #cbd5e1;
+    margin-bottom: 5px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.progress-bar-stats {
+    width: 100%;
+    height: 8px;
+    background: rgba(0,0,0,0.3);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.progress-fill-stats {
+    height: 100%;
+    border-radius: 10px;
+    transition: width 0.5s;
+}
+
+.progress-beginner {
+    background: linear-gradient(90deg, #22c55e, #16a34a);
+}
+
+.progress-intermediate {
+    background: linear-gradient(90deg, #eab308, #ca8a04);
+}
+
+.progress-advanced {
+    background: linear-gradient(90deg, #ef4444, #dc2626);
+}
+
+.big-stat {
+    text-align: center;
+    padding: 20px;
+}
+
+.big-stat-number {
+    font-size: 48px;
+    font-weight: bold;
+    color: #fbbf24;
+    margin-bottom: 5px;
+}
+
+.big-stat-label {
+    font-size: 14px;
+    color: #cbd5e1;
+}
+
+/* アニメーション */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulse-icon {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+}
+
+@keyframes blink-dot {
+    0%, 80%, 100% { opacity: 0.3; transform: scale(0.8); }
+    40% { opacity: 1; transform: scale(1); }
+}
+
+@keyframes bounce-char {
+    0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+    40% { transform: translateY(-10px); }
+    60% { transform: translateY(-5px); }
+}
+
+@keyframes sparkle {
+    0% { opacity: 1; transform: scale(0) rotate(0deg); }
+    50% { opacity: 1; transform: scale(1) rotate(180deg); }
+    100% { opacity: 0; transform: scale(0) rotate(360deg); }
+}
+
+@keyframes wiggle {
+    0%, 100% { transform: rotate(0deg); }
+    25% { transform: rotate(-5deg); }
+    75% { transform: rotate(5deg); }
+}
+
+.animate-fadeIn {
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+.animate-pulse-icon {
+    animation: pulse-icon 2s ease-in-out infinite;
+}
+
+.animate-blink-dot-1 {
+    animation: blink-dot 1.4s infinite ease-in-out;
+}
+
+.animate-blink-dot-2 {
+    animation: blink-dot 1.4s infinite ease-in-out;
+    animation-delay: -0.32s;
+}
+
+.animate-blink-dot-3 {
+    animation: blink-dot 1.4s infinite ease-in-out;
+    animation-delay: -0.16s;
+}
+
+.animate-bounce-char {
+    animation: bounce-char 2s ease-in-out;
+}
+
+.animate-sparkle {
+    animation: sparkle 1.5s ease-out forwards;
+}
+
+.animate-wiggle {
+    animation: wiggle 0.3s ease-in-out;
+}
