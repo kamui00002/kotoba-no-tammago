@@ -18,6 +18,8 @@ interface GameContextType {
     finishQuiz: (score: number, totalQuestions: number) => void;
     addExperience: (amount: number) => void;
     resetGame: () => void;
+    setLearningLevel: (level: Difficulty) => void;
+    learningLevel: Difficulty;
 }
 
 const GameContext = createContext<GameContextType | undefined>(undefined);
@@ -38,6 +40,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     const [isLoading, setIsLoading] = useState(true);
     const [currentDifficulty, setCurrentDifficulty] = useState<Difficulty | null>(null);
     const [quizResult, setQuizResult] = useState<QuizResult | null>(null);
+    const [learningLevel, setLearningLevelState] = useState<Difficulty>(Difficulty.BEGINNER);
 
     useEffect(() => {
         const savedProgress = storageManager.loadUserProgress();
@@ -49,9 +52,16 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             savedProgress.justLeveledUp = false;
             setUserProgressState(savedProgress);
         }
+
+        // 学習レベルを読み込み
+        const savedLearningLevel = storageManager.loadLearningLevel();
+        if (savedLearningLevel) {
+            setLearningLevelState(savedLearningLevel);
+        }
+
         setIsLoading(false);
     }, []);
-    
+
     const setUserProgress = useCallback((progress: UserProgress) => {
         storageManager.saveUserProgress(progress);
         setUserProgressState(progress);
@@ -67,7 +77,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             return () => clearTimeout(timer);
         }
     }, [userProgress, setUserProgress]);
-    
+
     const addExperience = useCallback((amount: number) => {
         let newXp = userProgress.xp + amount;
         let newLevel = userProgress.level;
@@ -112,7 +122,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         setUserProgress(newProgress);
         setGameState(GameState.MBTI_RESULT);
     }, [setUserProgress]);
-    
+
     const startQuiz = useCallback((difficulty: Difficulty) => {
         setCurrentDifficulty(difficulty);
         setGameState(GameState.QUIZ);
@@ -123,16 +133,23 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
         const xpGained = score * XP_PER_CORRECT_ANSWER[currentDifficulty];
         setQuizResult({ score, totalQuestions, xpGained });
-        
+
         addExperience(xpGained);
 
         setGameState(GameState.RESULT);
     }, [currentDifficulty, addExperience]);
-    
+
+    const setLearningLevel = useCallback((level: Difficulty) => {
+        setLearningLevelState(level);
+        storageManager.saveLearningLevel(level);
+    }, []);
+
     const resetGame = useCallback(() => {
         storageManager.resetUserProgress();
         setUserProgressState(initialProgress);
         setGameState(GameState.HOME);
+        setLearningLevelState(Difficulty.BEGINNER);
+        storageManager.clearLearningLevel();
     }, []);
 
     const value = {
@@ -148,6 +165,8 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         finishQuiz,
         addExperience,
         resetGame,
+        setLearningLevel,
+        learningLevel,
     };
 
     return <GameContext.Provider value={value}>{children}</GameContext.Provider>;

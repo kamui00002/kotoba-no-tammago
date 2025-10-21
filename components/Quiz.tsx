@@ -1,13 +1,16 @@
 // Fix: Replaced placeholder content with a functional Quiz component.
 import React from 'react';
 import { useQuiz } from '../hooks/useQuiz';
+import { useGame } from '../context/GameContext';
+import { GameState } from '../types';
 
 const Quiz: React.FC = () => {
-    const { 
-        isLoading, 
-        questions, 
-        currentIndex, 
-        currentQuestion, 
+    const { setGameState } = useGame();
+    const {
+        isLoading,
+        questions,
+        currentIndex,
+        currentQuestion,
         handleAnswer,
         selectedAnswer,
         isCorrect
@@ -43,14 +46,18 @@ const Quiz: React.FC = () => {
             <div className="w-full max-w-lg bg-white/10 backdrop-blur-md rounded-2xl shadow-2xl p-6">
                 <header className="flex justify-between items-center mb-4">
                     <p className="font-bold text-cyan-200">Question {currentIndex + 1}/{questions.length}</p>
-                    <button className="text-cyan-200 text-2xl font-mono" aria-label="Close" onClick={() => { /* Implement if needed */ }}>
+                    <button
+                        className="text-cyan-200 text-2xl font-mono hover:text-white transition-colors"
+                        aria-label="Close"
+                        onClick={() => setGameState(GameState.HOME)}
+                    >
                         &times;
                     </button>
                 </header>
 
                 <div className="w-full bg-gray-700 rounded-full h-2.5 mb-6">
-                    <div 
-                        className="bg-cyan-400 h-2.5 rounded-full transition-all duration-300" 
+                    <div
+                        className="bg-cyan-400 h-2.5 rounded-full transition-all duration-300"
                         style={{ width: `${((currentIndex + 1) / questions.length) * 100}%` }}
                     ></div>
                 </div>
@@ -62,7 +69,7 @@ const Quiz: React.FC = () => {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {currentQuestion.options.map((option, index) => (
-                         <button 
+                        <button
                             key={index}
                             onClick={() => handleAnswer(option)}
                             disabled={!!selectedAnswer}

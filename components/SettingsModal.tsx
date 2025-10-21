@@ -9,7 +9,7 @@ interface SettingsModalProps {
 }
 
 const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose }) => {
-    const { userProgress, completeMbtiTest, addExperience, setGameState, resetGame } = useGame();
+    const { userProgress, completeMbtiTest, addExperience, setGameState, resetGame, setLearningLevel, learningLevel } = useGame();
     const { mbtiType, characterType, level, xp, xpToNextLevel } = userProgress;
     const [showLevelSelect, setShowLevelSelect] = useState(false);
 
@@ -27,8 +27,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose }) => {
     };
 
     const handleLevelSelect = (difficulty: Difficulty) => {
-        // レベル変更のロジックをここに実装
-        // 現在は簡易的にアラートで表示
+        setLearningLevel(difficulty);
         const levelNames = {
             [Difficulty.BEGINNER]: '初級',
             [Difficulty.INTERMEDIATE]: '中級',
@@ -65,7 +64,10 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose }) => {
                         </div>
                         <div className="modal-item">
                             <div className="modal-label">学習レベル</div>
-                            <div className="modal-value">上級</div>
+                            <div className="modal-value">
+                                {learningLevel === Difficulty.BEGINNER ? '初級' :
+                                    learningLevel === Difficulty.INTERMEDIATE ? '中級' : '上級'}
+                            </div>
                             <button className="modal-button" onClick={handleChangeLevel}>レベル変更</button>
                         </div>
                     </div>

@@ -8,7 +8,7 @@ import { Difficulty } from '../types';
 import { useHomeScreen } from '../hooks/useHomeScreen';
 
 const HomeScreen: React.FC = () => {
-    const { startQuiz } = useGame();
+    const { startQuiz, learningLevel } = useGame();
     const {
         userProgress,
         characterInfo,
@@ -48,28 +48,23 @@ const HomeScreen: React.FC = () => {
 
                 {/* メインコンテンツ */}
                 <div className="home-content">
-                    <div className="character-name">INFP - 夢見る魔法使い</div>
-                    <div className="level">Lv.{userProgress.level}</div>
-                    <div
-                        className="character-display"
-                        onClick={handleCharacterTap}
-                    >
-                        🌙
-                    </div>
-                    <div className="exp-container">
-                        <div className="exp-bar">
-                            <div
-                                className="exp-progress"
-                                style={{ width: '50%' }}
-                            ></div>
-                        </div>
-                        <div className="exp-text">
-                            ⭐ 50 / 100 EXP
-                        </div>
-                    </div>
+                    {/* キャラクター表示を CharacterView に置き換え */}
+                    <CharacterView
+                        name={characterInfo.name}
+                        level={userProgress.level}
+                        mbtiType={userProgress.mbtiType!}
+                        currentExp={userProgress.xp}
+                        maxExp={userProgress.xpToNextLevel}
+                        imagePath={characterImage}
+                        onCharacterTap={handleCharacterTap}
+                        characterType={userProgress.characterType!}
+                        evolutionStage={userProgress.evolutionStage}
+                        isTapped={isTapped}
+                        justLeveledUp={userProgress.justLeveledUp || false}
+                    />
                     <button
                         className="quiz-start-button"
-                        onClick={() => startQuiz(Difficulty.BEGINNER)}
+                        onClick={() => startQuiz(learningLevel)}
                     >
                         📝 英語クイズ開始
                         <div style={{ fontSize: '12px', marginTop: '5px', opacity: 0.9 }}>

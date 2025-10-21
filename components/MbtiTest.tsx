@@ -23,7 +23,12 @@ const MbtiTest: React.FC = () => {
 
     return (
         <div className="phone-container">
-            <div className="screen" style={{ background: 'linear-gradient(135deg, #1a0033 0%, #4a148c 50%, #7b1fa2 100%)' }}>
+            <div className="screen" style={{
+                background: 'linear-gradient(135deg, #1a0033 0%, #4a148c 50%, #7b1fa2 100%)',
+                minHeight: '100vh',
+                display: 'flex',
+                flexDirection: 'column'
+            }}>
                 {/* ヘッダー */}
                 <div className="quiz-header">
                     <div className="icon">⚙️</div>
@@ -37,7 +42,16 @@ const MbtiTest: React.FC = () => {
                 <div className="character-section">
                     <div className="character-container">
                         <div className="character-avatar">
-                            {currentQuestion.characterIcon}
+                            <img
+                                src={currentQuestion.characterIcon}
+                                alt={currentQuestion.characterName}
+                                style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%' }}
+                                onError={(e) => {
+                                    const target = e.target as HTMLImageElement;
+                                    target.style.display = 'none';
+                                    target.parentElement!.innerHTML = '🧚‍♀️';
+                                }}
+                            />
                         </div>
                         <div className="speech-bubble">
                             {currentQuestion.bubble}

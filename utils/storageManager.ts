@@ -1,6 +1,6 @@
 // utils/storageManager.ts
 
-import { UserProgress } from '../types';
+import { UserProgress, Difficulty } from '../types';
 
 /**
  * @class SwiftUIの `StorageManager` シングルトンクラスに相当するモジュール
@@ -20,6 +20,7 @@ import { UserProgress } from '../types';
  */
 const STORAGE_KEYS = {
     USER_PROGRESS: 'userProgress',
+    LEARNING_LEVEL: 'learningLevel',
 };
 
 /**
@@ -71,7 +72,7 @@ export const loadUserProgress = (): UserProgress | null => {
         if (serializedProgress === null) {
             return null; // 保存されているデータがない
         }
-        
+
         /**
          * @decoder SwiftUIの `JSONDecoder().decode(UserData.self, from: data)` に相当
          * 
@@ -102,5 +103,43 @@ export const resetUserProgress = (): void => {
         localStorage.removeItem(STORAGE_KEYS.USER_PROGRESS);
     } catch (error) {
         console.error("Failed to reset user progress in localStorage:", error);
+    }
+};
+
+/**
+ * @function saveLearningLevel
+ * 学習レベルをlocalStorageに保存します。
+ */
+export const saveLearningLevel = (level: Difficulty): void => {
+    try {
+        localStorage.setItem(STORAGE_KEYS.LEARNING_LEVEL, level);
+    } catch (error) {
+        console.error("Failed to save learning level to localStorage:", error);
+    }
+};
+
+/**
+ * @function loadLearningLevel
+ * localStorageから学習レベルを読み込みます。
+ */
+export const loadLearningLevel = (): Difficulty | null => {
+    try {
+        const level = localStorage.getItem(STORAGE_KEYS.LEARNING_LEVEL);
+        return level as Difficulty | null;
+    } catch (error) {
+        console.error("Failed to load learning level from localStorage:", error);
+        return null;
+    }
+};
+
+/**
+ * @function clearLearningLevel
+ * localStorageから学習レベルを削除します。
+ */
+export const clearLearningLevel = (): void => {
+    try {
+        localStorage.removeItem(STORAGE_KEYS.LEARNING_LEVEL);
+    } catch (error) {
+        console.error("Failed to clear learning level from localStorage:", error);
     }
 };

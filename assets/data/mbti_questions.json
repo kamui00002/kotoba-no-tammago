@@ -1,7 +1,9 @@
 [
     {
         "id": 1,
-        "character": "isfj", "characterName": "妖精", "characterIcon": "/assets/images/characters/isfj_fairy_idle.png",
+        "character": "infp",
+        "characterName": "妖精",
+        "characterIcon": "/assets/images/characters/infp_fairy_idle.png",
         "bubble": "あなたのことを教えてくれる？",
         "question": "週末の過ごし方として、どちらが好き？",
         "choices": [
@@ -11,7 +13,9 @@
     },
     {
         "id": 2,
-        "character": "entp", "characterName": "発明家", "characterIcon": "/assets/images/characters/entp_inventor_idle.png",
+        "character": "estp",
+        "characterName": "発明家",
+        "characterIcon": "/assets/images/characters/estp_inventor_idle.png",
         "bubble": "ふむふむ、興味深いね…",
         "question": "物事を考えるとき、どちらを重視する？",
         "choices": [
@@ -21,7 +25,9 @@
     },
     {
         "id": 3,
-        "character": "infp", "characterName": "魔法使い", "characterIcon": "/assets/images/characters/infp_wizard_idle.png",
+        "character": "intp",
+        "characterName": "魔法使い",
+        "characterIcon": "/assets/images/characters/intp_wizard_idle.png",
         "bubble": "心の声を聞かせて…",
         "question": "決断を下すとき、大切なのは？",
         "choices": [
@@ -31,7 +37,9 @@
     },
     {
         "id": 4,
-        "character": "entj", "characterName": "騎士", "characterIcon": "/assets/images/characters/entj_knight_idle.png",
+        "character": "istj",
+        "characterName": "騎士",
+        "characterIcon": "/assets/images/characters/istj_knight_idle.png",
         "bubble": "効率的なのはどちらかな？",
         "question": "旅行の計画を立てるときは？",
         "choices": [
@@ -41,7 +49,9 @@
     },
     {
         "id": 5,
-        "character": "isfj", "characterName": "妖精", "characterIcon": "/assets/images/characters/isfj_fairy_idle.png",
+        "character": "infp",
+        "characterName": "妖精",
+        "characterIcon": "/assets/images/characters/infp_fairy_idle.png",
         "bubble": "大丈夫、ゆっくりでいいよ",
         "question": "初対面の人と話すのは？",
         "choices": [
@@ -51,7 +61,9 @@
     },
     {
         "id": 6,
-        "character": "entp", "characterName": "発明家", "characterIcon": "/assets/images/characters/entp_inventor_idle.png",
+        "character": "estp",
+        "characterName": "発明家",
+        "characterIcon": "/assets/images/characters/estp_inventor_idle.png",
         "bubble": "これはどうかな？面白いアイデアだ！",
         "question": "新しいスキルを学ぶとき、どちらのタイプ？",
         "choices": [
@@ -61,7 +73,9 @@
     },
     {
         "id": 7,
-        "character": "infp", "characterName": "魔法使い", "characterIcon": "/assets/images/characters/infp_wizard_idle.png",
+        "character": "intp",
+        "characterName": "魔法使い",
+        "characterIcon": "/assets/images/characters/intp_wizard_idle.png",
         "bubble": "あなたの優しさが伝わってくるよ",
         "question": "友達が悩んでいたら？",
         "choices": [
@@ -71,7 +85,9 @@
     },
     {
         "id": 8,
-        "character": "entj", "characterName": "騎士", "characterIcon": "/assets/images/characters/entj_knight_idle.png",
+        "character": "istj",
+        "characterName": "騎士",
+        "characterIcon": "/assets/images/characters/istj_knight_idle.png",
         "bubble": "整理整頓は基本だ",
         "question": "あなたのデスク周りは？",
         "choices": [
@@ -81,7 +97,9 @@
     },
     {
         "id": 9,
-        "character": "isfj", "characterName": "妖精", "characterIcon": "/assets/images/characters/isfj_fairy_idle.png",
+        "character": "infp",
+        "characterName": "妖精",
+        "characterIcon": "/assets/images/characters/infp_fairy_idle.png",
         "bubble": "無理しないでね",
         "question": "エネルギーを回復する方法は？",
         "choices": [
@@ -91,7 +109,9 @@
     },
     {
         "id": 10,
-        "character": "entp", "characterName": "発明家", "characterIcon": "/assets/images/characters/entp_inventor_idle.png",
+        "character": "estp",
+        "characterName": "発明家",
+        "characterIcon": "/assets/images/characters/estp_inventor_idle.png",
         "bubble": "なぜそうなるんだろう？",
         "question": "説明書を読むとき",
         "choices": [
@@ -101,7 +121,9 @@
     },
     {
         "id": 11,
-        "character": "infp", "characterName": "魔法使い", "characterIcon": "/assets/images/characters/infp_wizard_idle.png",
+        "character": "intp",
+        "characterName": "魔法使い",
+        "characterIcon": "/assets/images/characters/intp_wizard_idle.png",
         "bubble": "どちらの言葉が心に響く？",
         "question": "仕事で評価されるなら、どちらが嬉しい？",
         "choices": [
@@ -111,7 +133,9 @@
     },
     {
         "id": 12,
-        "character": "entj", "characterName": "騎士", "characterIcon": "/assets/images/characters/entj_knight_idle.png",
+        "character": "istj",
+        "characterName": "騎士",
+        "characterIcon": "/assets/images/characters/istj_knight_idle.png",
         "bubble": "計画通りに進めよう！",
         "question": "締め切りが近づいてきたら？",
         "choices": [
@@ -121,7 +145,9 @@
     },
     {
         "id": 13,
-        "character": "isfj", "characterName": "妖精", "characterIcon": "/assets/images/characters/isfj_fairy_idle.png",
+        "character": "infp",
+        "characterName": "妖精",
+        "characterIcon": "/assets/images/characters/infp_fairy_idle.png",
         "bubble": "あなたのペースでいいんだよ",
         "question": "注目を浴びるのは？",
         "choices": [
@@ -131,7 +157,9 @@
     },
     {
         "id": 14,
-        "character": "entp", "characterName": "発明家", "characterIcon": "/assets/images/characters/entp_inventor_idle.png",
+        "character": "estp",
+        "characterName": "発明家",
+        "characterIcon": "/assets/images/characters/estp_inventor_idle.png",
         "bubble": "そのアイデア、もっと聞かせて！",
         "question": "新しいアイデアを聞いたとき",
         "choices": [
@@ -141,7 +169,9 @@
     },
     {
         "id": 15,
-        "character": "infp", "characterName": "魔法使い", "characterIcon": "/assets/images/characters/infp_wizard_idle.png",
+        "character": "intp",
+        "characterName": "魔法使い",
+        "characterIcon": "/assets/images/characters/intp_wizard_idle.png",
         "bubble": "みんなが幸せでありますように…",
         "question": "意見が対立したとき",
         "choices": [
@@ -151,7 +181,9 @@
     },
     {
         "id": 16,
-        "character": "entj", "characterName": "騎士", "characterIcon": "/assets/images/characters/entj_knight_idle.png",
+        "character": "istj",
+        "characterName": "騎士",
+        "characterIcon": "/assets/images/characters/istj_knight_idle.png",
         "bubble": "一日の計は朝にあり！",
         "question": "休日の朝は？",
         "choices": [
