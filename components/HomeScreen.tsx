@@ -36,7 +36,7 @@ const HomeScreen: React.FC = () => {
                     >
                         ⚙️
                     </div>
-                    <div className="icon">🏠</div>
+                    <div className="icon" style={{ color: '#8B4513' }}>🏠</div>
                     <div
                         className="icon"
                         onClick={() => setIsStatsOpen(true)}
@@ -48,26 +48,23 @@ const HomeScreen: React.FC = () => {
 
                 {/* メインコンテンツ */}
                 <div className="home-content">
-                    <div className="character-name">{characterInfo.name}</div>
+                    <div className="character-name">INFP - 夢見る魔法使い</div>
                     <div className="level">Lv.{userProgress.level}</div>
                     <div
                         className="character-display"
                         onClick={handleCharacterTap}
                     >
-                        {userProgress.characterType === 'INFP' ? '🌙' :
-                            userProgress.characterType === 'ENTJ' ? '⚔️' :
-                                userProgress.characterType === 'ISFJ' ? '🌸' :
-                                    userProgress.characterType === 'ENTP' ? '⚡' : '🌙'}
+                        🌙
                     </div>
                     <div className="exp-container">
                         <div className="exp-bar">
                             <div
                                 className="exp-progress"
-                                style={{ width: `${(userProgress.xp / userProgress.xpToNextLevel) * 100}%` }}
+                                style={{ width: '50%' }}
                             ></div>
                         </div>
                         <div className="exp-text">
-                            ⭐ {userProgress.xp} / {userProgress.xpToNextLevel} EXP
+                            ⭐ 50 / 100 EXP
                         </div>
                     </div>
                     <button
@@ -76,7 +73,7 @@ const HomeScreen: React.FC = () => {
                     >
                         📝 英語クイズ開始
                         <div style={{ fontSize: '12px', marginTop: '5px', opacity: 0.9 }}>
-                            今日 0/10回
+                            今日 2/10回
                         </div>
                     </button>
                     <div className="stats">

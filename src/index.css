@@ -34,6 +34,27 @@ body {
 .home-screen {
     background-image: linear-gradient(to bottom, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.85) 60px, rgba(255,255,255,0.7) 200px, rgba(255,255,255,0.85) 500px, rgba(255,255,255,0.95) 100%), linear-gradient(135deg, #1a0033 0%, #4a148c 50%, #7b1fa2 100%);
     min-height: 100vh;
+    padding: 20px;
+    text-align: center;
+}
+
+.home-content {
+    padding: 20px;
+    text-align: center;
+}
+
+.character-name {
+    color: #9B7ED9;
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.level {
+    color: #FFD700;
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 30px;
 }
 
 /* ヘッダー */
@@ -64,15 +85,16 @@ body {
 .character-display {
     width: 250px;
     height: 250px;
-    margin: 0 auto 20px;
+    margin: 0 auto 30px;
     background: #B8A4E8;
     border-radius: 50%;
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 80px;
+    font-size: 120px;
     cursor: pointer;
     transition: transform 0.3s;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
 }
 
 .character-display:hover {
@@ -82,6 +104,7 @@ body {
 /* 経験値バー */
 .exp-container {
     margin: 20px 0;
+    padding: 0 20px;
 }
 
 .exp-bar {
@@ -91,24 +114,27 @@ body {
     border-radius: 10px;
     overflow: hidden;
     margin-bottom: 8px;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
 }
 
 .exp-progress {
     height: 100%;
     background: linear-gradient(90deg, #B8A4E8 0%, #9B7ED9 100%);
     transition: width 1s;
+    border-radius: 10px;
 }
 
 .exp-text {
     color: #666;
     font-size: 14px;
     text-align: center;
+    font-weight: 500;
 }
 
 /* クイズ開始ボタン */
 .quiz-start-button {
     width: 85%;
-    margin: 20px auto;
+    margin: 30px auto;
     padding: 18px;
     background: linear-gradient(135deg, #9B7ED9 0%, #B8A4E8 100%);
     color: white;
@@ -121,16 +147,17 @@ body {
     position: relative;
     display: block;
     transition: all 0.3s;
+    box-shadow: 0 8px 20px rgba(155,126,217,0.3);
 }
 
 .quiz-start-button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 10px 25px rgba(155,126,217,0.5);
+    transform: translateY(-3px);
+    box-shadow: 0 12px 30px rgba(155,126,217,0.4);
 }
 
 .quiz-start-button:active {
-    transform: translateY(0);
-    box-shadow: 0 5px 15px rgba(155,126,217,0.4);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 15px rgba(155,126,217,0.3);
 }
 
 /* 統計情報 */
@@ -138,9 +165,10 @@ body {
     display: flex;
     justify-content: center;
     gap: 40px;
-    margin-top: 20px;
+    margin-top: 30px;
     color: #888;
     font-size: 14px;
+    font-weight: 500;
 }
 
 /* モーダル */
@@ -165,10 +193,10 @@ body {
 
 .modal-content {
     background: linear-gradient(135deg, #1a0033 0%, #4a148c 50%, #7b1fa2 100%);
-    border-radius: 30px;
+    border-radius: 25px;
     width: 100%;
     max-width: 350px;
-    max-height: 90vh;
+    max-height: 85vh;
     overflow-y: auto;
     box-shadow: 0 20px 60px rgba(0,0,0,0.5);
 }
@@ -291,6 +319,8 @@ body {
 /* 統計モーダル用のスタイル */
 .stats-modal .modal-content {
     background: linear-gradient(135deg, #1e3a8a 0%, #4c1d95 100%);
+    border-radius: 25px;
+    max-height: 90vh;
 }
 
 .stats-card {
@@ -386,6 +416,101 @@ body {
 .big-stat-label {
     font-size: 14px;
     color: #cbd5e1;
+}
+
+/* MBTI診断画面のスタイル */
+.quiz-header {
+    height: 60px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+    background: rgba(255,255,255,0.95);
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.character-section {
+    padding: 30px 20px 20px;
+    background: linear-gradient(to bottom, rgba(184,164,232,0.1), transparent);
+}
+
+.character-container {
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+}
+
+.character-avatar {
+    width: 70px;
+    height: 70px;
+    background: linear-gradient(135deg, #B8A4E8 0%, #9B7ED9 100%);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 35px;
+}
+
+.speech-bubble {
+    background: white;
+    border-radius: 20px;
+    padding: 15px 20px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    position: relative;
+    max-width: 260px;
+    font-size: 15px;
+    color: #333;
+}
+
+.speech-bubble::before {
+    content: '';
+    position: absolute;
+    left: -10px;
+    top: 20px;
+    border-style: solid;
+    border-width: 10px 15px 10px 0;
+    border-color: transparent white transparent transparent;
+}
+
+.question-area {
+    padding: 20px;
+}
+
+.question-text {
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.choices {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.choice-button {
+    background: white;
+    border: 2px solid #ddd;
+    border-radius: 20px;
+    padding: 20px;
+    font-size: 16px;
+    text-align: left;
+    cursor: pointer;
+    transition: all 0.3s;
+    position: relative;
+    z-index: 10;
+}
+
+.choice-button:hover {
+    background: #f5f0ff;
+    border-color: #9B7ED9;
+    transform: translateX(5px);
+}
+
+.choice-button:active {
+    background: #e8d4ff;
 }
 
 /* アニメーション */
