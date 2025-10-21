@@ -13,7 +13,7 @@ import { EvolutionStage } from '../types';
  */
 export const useHomeScreen = () => {
     const { userProgress, addExperience } = useGame();
-    const { characterType, evolutionStage } = userProgress;
+    const { characterType, evolutionStage, level } = userProgress;
 
     const [characterImage, setCharacterImage] = useState('');
 
@@ -24,8 +24,26 @@ export const useHomeScreen = () => {
      * アニメーション用のCSSクラスが適用/削除されます。
      */
     const [isTapped, setIsTapped] = useState(false);
+    const [isHatching, setIsHatching] = useState(false); // 孵化アニメーション用
+    const [justLeveledUp, setJustLeveledUp] = useState(false); // レベルアップアニメーション用
 
     const characterInfo = characterType ? CHARACTER_DATA[characterType] : null;
+
+    // レベルアップ時のアニメーション検知
+    useEffect(() => {
+        // レベルアップ時のアニメーション
+        if (level > 1) {
+            setJustLeveledUp(true);
+            setTimeout(() => setJustLeveledUp(false), 3000);
+        }
+
+        // レベルが5（子供への進化）になったときを検知
+        if (level === 5 && evolutionStage === EvolutionStage.CHILD) {
+            setIsHatching(true);
+            // 5秒後にアニメーションを終了
+            setTimeout(() => setIsHatching(false), 5000);
+        }
+    }, [level, evolutionStage]);
 
     useEffect(() => {
         if (!characterType) {
@@ -86,6 +104,8 @@ export const useHomeScreen = () => {
         characterInfo,
         characterImage,
         isTapped, // Viewに渡すための状態
+        isHatching, // 追加
+        justLeveledUp, // レベルアップアニメーション用
         handleCharacterTap,
         addExperience,
     };

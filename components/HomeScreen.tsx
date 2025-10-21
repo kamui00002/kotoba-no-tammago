@@ -4,6 +4,7 @@ import CharacterView from './CharacterView';
 import SettingsModal from './SettingsModal';
 import InfoModal from './InfoModal';
 import StatsModal from './StatsModal';
+import LottieAnimation from './LottieAnimation';
 import { Difficulty } from '../types';
 import { useHomeScreen } from '../hooks/useHomeScreen';
 
@@ -14,6 +15,8 @@ const HomeScreen: React.FC = () => {
         characterInfo,
         characterImage,
         isTapped,
+        isHatching, // 追加
+        justLeveledUp,
         handleCharacterTap,
         addExperience,
     } = useHomeScreen();
@@ -60,7 +63,7 @@ const HomeScreen: React.FC = () => {
                         characterType={userProgress.characterType!}
                         evolutionStage={userProgress.evolutionStage}
                         isTapped={isTapped}
-                        justLeveledUp={userProgress.justLeveledUp || false}
+                        justLeveledUp={justLeveledUp}
                     />
                     <button
                         className="quiz-start-button"
@@ -90,6 +93,29 @@ const HomeScreen: React.FC = () => {
                     isOpen={isStatsOpen}
                     onClose={() => setIsStatsOpen(false)}
                 />
+
+                {/* 卵孵化アニメーション - 画面全体 */}
+                {isHatching && (
+                    <div className="fixed inset-0 bg-gradient-to-br from-purple-900 via-purple-800 to-pink-800 z-50 flex items-center justify-center">
+                        <div className="text-center w-full h-full flex flex-col items-center justify-center">
+                            <div className="w-96 h-96 mb-8 flex items-center justify-center">
+                                <LottieAnimation
+                                    animationData="/assets/lottie/egg-hatch.json"
+                                    loop={false}
+                                    autoplay={true}
+                                    className="w-full h-full"
+                                />
+                            </div>
+
+                            <div className="text-white text-4xl font-bold mb-4 animate-pulse">
+                                🎉 進化しました！ 🎉
+                            </div>
+                            <div className="text-white text-2xl opacity-90 animate-bounce">
+                                卵から子供に成長しました！
+                            </div>
+                        </div>
+                    </div>
+                )}
             </div>
         </div>
     );

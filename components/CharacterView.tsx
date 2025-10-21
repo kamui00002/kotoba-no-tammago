@@ -1,6 +1,7 @@
 import React from 'react';
 import ExpBarView from './ExpBarView';
 import ParticleEffect from './ParticleEffect'; // パーティクルコンポーネントをインポート
+import LottieAnimation from './LottieAnimation'; // 追加
 import { MbtiType, CharacterType, EvolutionStage } from '../types';
 import { getBackgroundImage } from '../utils/imageUtils';
 
@@ -75,6 +76,18 @@ const CharacterView: React.FC<CharacterViewProps> = ({
                     )}
                     {/* @animation レベルアップ時にパーティクルエフェクトを表示 */}
                     {justLeveledUp && <ParticleEffect />}
+
+                    {/* Lottieアニメーション（レベルアップ時） */}
+                    {justLeveledUp && (
+                        <div className="absolute inset-0 pointer-events-none">
+                            <LottieAnimation
+                                animationData="/assets/lottie/level-up.json"
+                                loop={false}
+                                autoplay={true}
+                                className="w-full h-full"
+                            />
+                        </div>
+                    )}
                 </div>
 
                 <ExpBarView currentExp={currentExp} maxExp={maxExp} />

@@ -9,7 +9,7 @@ interface SettingsModalProps {
 }
 
 const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose }) => {
-    const { userProgress, completeMbtiTest, addExperience, setGameState, resetGame, setLearningLevel, learningLevel } = useGame();
+    const { userProgress, completeMbtiTest, addExperience, setGameState, resetGame, setLearningLevel, learningLevel, setUserProgress } = useGame();
     const { mbtiType, characterType, level, xp, xpToNextLevel } = userProgress;
     const [showLevelSelect, setShowLevelSelect] = useState(false);
 
@@ -100,6 +100,34 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose }) => {
                         </div>
                     </div>
 
+                    {/* Debug Mode Section */}
+                    <div className="modal-section">
+                        <div className="modal-section-title">🛠️ デバッグモード</div>
+                        <div className="modal-item">
+                            <div className="modal-label">テスト用機能</div>
+                            <div className="debug-buttons">
+                                <button
+                                    className="modal-button"
+                                    onClick={() => addExperience(100)}
+                                >
+                                    +100 EXP
+                                </button>
+                                <button
+                                    className="modal-button"
+                                    onClick={() => {
+                                        const newProgress = {
+                                            ...userProgress,
+                                            level: userProgress.level + 1,
+                                            xpToNextLevel: 100 + (userProgress.level) * 50
+                                        };
+                                        setUserProgress(newProgress);
+                                    }}
+                                >
+                                    +1 Level
+                                </button>
+                            </div>
+                        </div>
+                    </div>
 
                     {/* App Info Section */}
                     <div className="modal-section">

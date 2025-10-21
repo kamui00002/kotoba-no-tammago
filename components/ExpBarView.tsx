@@ -22,7 +22,7 @@ const ExpBarView: React.FC<ExpBarViewProps> = ({ currentExp, maxExp }) => {
 
     return (
         <div>
-            <div className="flex justify-between text-sm font-medium text-gray-200 mb-1">
+            <div className="flex justify-between text-sm font-medium text-gray-800 mb-1">
                 <span>⭐ XP</span>
                 <span>{currentExp} / {maxExp}</span>
             </div>
