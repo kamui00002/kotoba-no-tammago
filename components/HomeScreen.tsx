@@ -24,6 +24,7 @@ const HomeScreen: React.FC = () => {
     const [isSettingsOpen, setIsSettingsOpen] = useState(false);
     const [isInfoOpen, setIsInfoOpen] = useState(false);
     const [isStatsOpen, setIsStatsOpen] = useState(false);
+    const [activeTab, setActiveTab] = useState('home');
 
     if (!characterInfo) return null; // データがまだない場合は何も表示しない
 
@@ -31,22 +32,51 @@ const HomeScreen: React.FC = () => {
         <div className="phone-container">
             <div className="home-screen">
                 {/* ヘッダー */}
-                <div className="home-header">
-                    <div
-                        className="icon"
-                        onClick={() => setIsSettingsOpen(true)}
-                        style={{ cursor: 'pointer', zIndex: 100 }}
-                    >
-                        ⚙️
-                    </div>
-                    <div className="icon" style={{ color: '#8B4513' }}>🏠</div>
-                    <div
-                        className="icon"
-                        onClick={() => setIsStatsOpen(true)}
-                        style={{ cursor: 'pointer', zIndex: 100 }}
-                    >
-                        📊
-                    </div>
+                <div className="flex justify-center items-center gap-4 mb-4">
+                    {[
+                        { id: 'settings', label: '設定' },
+                        { id: 'home', label: 'ホーム' },
+                        { id: 'stats', label: '統計' }
+                    ].map((tab) => (
+                        <button
+                            key={tab.id}
+                            onClick={() => {
+                                setActiveTab(tab.id);
+                                if (tab.id === 'settings') setIsSettingsOpen(true);
+                                if (tab.id === 'stats') setIsStatsOpen(true);
+                            }}
+                            className="fantasy-text tab-button relative rounded-xl transition-all duration-300 ease-in-out"
+                            style={{
+                                fontWeight: activeTab === tab.id ? '800' : '700',
+                                textShadow: activeTab === tab.id
+                                    ? '0 2px 4px rgba(255,255,255,0.9)'
+                                    : '0 1px 3px rgba(236,72,153,0.4)',
+                                fontSize: '18px',
+                                padding: '10px 24px',
+                                letterSpacing: '1px',
+                                color: activeTab === tab.id ? 'white' : '#EC4899',
+                                fontFamily: '"Comic Sans MS", "Hiragino Maru Gothic ProN", "ヒラギノ丸ゴ ProN W4", "Meiryo", "メイリオ", sans-serif',
+                                lineHeight: '1',
+                                whiteSpace: 'nowrap'
+                            }}
+                        >
+                            {/* 可愛いピンクのグラデーション背景 */}
+                            {activeTab === tab.id && (
+                                <div className="absolute inset-0 bg-gradient-to-r from-pink-400 to-pink-300 rounded-xl shadow-lg"
+                                    style={{ zIndex: -1 }}
+                                />
+                            )}
+
+                            <span className="relative z-10">{tab.label}</span>
+
+                            {/* アンダーライン */}
+                            {activeTab === tab.id && (
+                                <div className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-8 h-1 bg-white rounded-full"
+                                    style={{ zIndex: 10 }}
+                                />
+                            )}
+                        </button>
+                    ))}
                 </div>
 
                 {/* メインコンテンツ */}
