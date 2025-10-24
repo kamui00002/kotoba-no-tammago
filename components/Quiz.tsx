@@ -1,4 +1,4 @@
-// Fix: Replaced placeholder content with a functional Quiz component.
+1// Fix: Replaced placeholder content with a functional Quiz component.
 import React from 'react';
 import { useQuiz } from '../hooks/useQuiz';
 import { useGame } from '../context/GameContext';

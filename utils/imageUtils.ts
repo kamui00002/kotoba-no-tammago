@@ -5,7 +5,7 @@ import { CHARACTER_DATA } from '../constants';
 /**
  * 画像ファイルが存在しない場合に表示する代替画像のパス
  */
-const FALLBACK_EGG_IMAGE = '/assets/images/eggs/fallback_egg.png';
+const FALLBACK_EGG_IMAGE = '/images/eggs/fallback_egg.png.png';
 
 /**
  * キャラクターの画像パスを生成します。
@@ -16,9 +16,9 @@ const FALLBACK_EGG_IMAGE = '/assets/images/eggs/fallback_egg.png';
 export const getCharacterImage = (characterType: CharacterType, pose: 'idle' | 'happy' | 'evolve'): string => {
     const characterInfo = CHARACTER_DATA[characterType];
     if (!characterInfo) return FALLBACK_EGG_IMAGE;
-    
+
     const mbtiLower = characterInfo.mbti.toLowerCase();
-    return `/assets/images/characters/${mbtiLower}_${characterType}_${pose}.png`;
+    return `/images/characters/${mbtiLower}_${characterType}_${pose}.PNG`;
 };
 
 /**
@@ -29,9 +29,9 @@ export const getCharacterImage = (characterType: CharacterType, pose: 'idle' | '
 export const getBackgroundImage = (characterType: CharacterType): string => {
     const characterInfo = CHARACTER_DATA[characterType];
     if (!characterInfo) return ''; // 背景は失敗した場合空にする
-    
+
     const mbtiLower = characterInfo.mbti.toLowerCase();
-    return `/assets/images/backgrounds/bg_${mbtiLower}_${characterType}.png`;
+    return `/images/backgrounds/bg_${mbtiLower}_${characterType}.PNG`;
 };
 
 /**
@@ -44,5 +44,5 @@ export const getEggImage = (characterType: CharacterType): string => {
     if (!characterInfo) return FALLBACK_EGG_IMAGE;
 
     const mbtiLower = characterInfo.mbti.toLowerCase();
-    return `/assets/images/eggs/${mbtiLower}_${characterType}_egg.png`;
+    return `/images/eggs/${mbtiLower}_${characterType}_egg.PNG`;
 };

@@ -7,7 +7,7 @@ import { QUIZ_LENGTH } from '../constants';
 
 export const useQuiz = () => {
     const { currentDifficulty, finishQuiz } = useGame();
-    
+
     const [questions, setQuestions] = useState<QuizQuestion[]>([]);
     const [currentIndex, setCurrentIndex] = useState(0);
     const [score, setScore] = useState(0);
@@ -20,7 +20,7 @@ export const useQuiz = () => {
         if (!currentDifficulty) return;
 
         setIsLoading(true);
-        fetch('/assets/data/words.json')
+        fetch('/data/words.json')
             .then(res => res.json())
             .then((allWords: Word[]) => {
                 const quizQuestions = generateQuizQuestions(allWords, currentDifficulty, QUIZ_LENGTH);
@@ -56,7 +56,7 @@ export const useQuiz = () => {
             }
         }, 1000); // Wait 1 second before next question
     }, [currentIndex, questions, selectedAnswer]);
-    
+
     useEffect(() => {
         if (isFinished) {
             finishQuiz(score, questions.length);

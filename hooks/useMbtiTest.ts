@@ -27,7 +27,7 @@ export const useMbtiTest = () => {
      * useEffectフックに空の依存配列 `[]` を渡すことで、初期化処理（init）のように振る舞います。
      */
     useEffect(() => {
-        fetch('/assets/data/mbti_questions.json')
+        fetch('/data/mbti_questions.json')
             .then(res => res.json())
             .then((data: MbtiQuestion[]) => {
                 setQuestions(data);
@@ -56,7 +56,7 @@ export const useMbtiTest = () => {
         const ns = counts.N >= counts.S ? 'N' : 'S';
         const ft = counts.F >= counts.T ? 'F' : 'T';
         const pj = counts.P >= counts.J ? 'P' : 'J';
-        
+
         const resultType = `${ie}${ns}${ft}${pj}` as MbtiType;
 
         // グローバルなゲーム状態を更新

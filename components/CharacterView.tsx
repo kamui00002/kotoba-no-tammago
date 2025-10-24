@@ -66,7 +66,7 @@ const CharacterView: React.FC<CharacterViewProps> = ({
                             onError={(e) => {
                                 const target = e.target as HTMLImageElement;
                                 target.onerror = null;
-                                target.src = '/assets/images/eggs/fallback_egg.png';
+                                target.src = '/images/eggs/fallback_egg.png.png';
                             }}
                         />
                     ) : (
@@ -81,7 +81,7 @@ const CharacterView: React.FC<CharacterViewProps> = ({
                     {justLeveledUp && (
                         <div className="absolute inset-0 pointer-events-none">
                             <LottieAnimation
-                                animationData="/assets/lottie/level-up.json"
+                                animationData="/lottie/Level-up.json"
                                 loop={false}
                                 autoplay={true}
                                 className="w-full h-full"

@@ -130,7 +130,7 @@ const HomeScreen: React.FC = () => {
                         <div className="text-center w-full h-full flex flex-col items-center justify-center">
                             <div className="w-96 h-96 mb-8 flex items-center justify-center">
                                 <LottieAnimation
-                                    animationData="/assets/lottie/egg-hatch.json"
+                                    animationData="/lottie/egg-hatch.json"
                                     loop={false}
                                     autoplay={true}
                                     className="w-full h-full"
