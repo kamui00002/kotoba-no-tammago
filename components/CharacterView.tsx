@@ -47,10 +47,10 @@ const CharacterView: React.FC<CharacterViewProps> = ({
             <div className="rounded-xl p-4">
                 <div className="flex justify-between items-start mb-4">
                     <div>
-                        <h2 className="text-3xl font-bold text-gray-800">{name}</h2>
-                        <p className="text-lg text-gray-600">Lv. {level}</p>
+                        <h2 className="text-3xl font-bold text-white drop-shadow-lg">{name}</h2>
+                        <p className="text-lg text-white/90 drop-shadow-md">Lv. {level}</p>
                     </div>
-                    <div className="bg-purple-600 text-white text-sm font-bold px-3 py-1 rounded-full">{mbtiType}</div>
+                    <div className="bg-purple-600 text-white text-sm font-bold px-3 py-1 rounded-full shadow-lg">{mbtiType}</div>
                 </div>
 
                 <div
