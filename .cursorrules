@@ -1,0 +1,350 @@
+# ことばのたまご (Kotoba no Tamago) - プロジェクトルール
+
+## プロジェクト概要
+MBTI診断とクイズゲームを組み合わせた、キャラクター育成型の英語学習アプリ
+
+## 重要なルール
+- 変更を加える前に、95%の確信を持つまで質問をする
+- デバッグログとコメントを必ず追加する
+- 適用したルールを明示的に記載する
+- コードの重複を避け、既存の実装を確認する
+- シンプルな解決策を優先する
+
+---
+
+## プロジェクト構造
+
+### ディレクトリ構成
+```
+/
+├── components/          # Reactコンポーネント
+│   ├── HomeScreen.tsx
+│   ├── MbtiTest.tsx
+│   ├── Quiz.tsx
+│   ├── CharacterView.tsx
+│   └── ...
+├── hooks/              # カスタムフック
+│   ├── useHomeScreen.ts
+│   ├── useMbtiTest.ts
+│   └── useQuiz.ts
+├── context/            # React Context
+│   └── GameContext.tsx
+├── utils/              # ユーティリティ関数
+│   ├── imageUtils.ts
+│   ├── wordUtils.ts
+│   └── storageManager.ts
+├── assets/             # 静的アセット
+│   ├── data/          # JSONデータ
+│   ├── images/        # 画像ファイル（PNG大文字）
+│   └── lottie/        # Lottieアニメーション
+├── ios/               # iOSネイティブプロジェクト
+│   └── App/
+└── dist/              # ビルド出力（publicDirからコピー）
+```
+
+### 重要なファイル
+- `App.tsx` - メインアプリケーションコンポーネント
+- `types.ts` - TypeScript型定義
+- `constants.ts` - 定数定義
+- `capacitor.config.ts` - Capacitor設定
+- `vite.config.ts` - Vite設定
+
+---
+
+## 技術スタック
+
+### フロントエンド
+- **React 19** - UIライブラリ
+- **TypeScript** - 型安全性
+- **Tailwind CSS** - スタイリング
+- **Vite** - ビルドツール
+
+### モバイル
+- **Capacitor 7** - ネイティブラッパー
+- **iOS** - ターゲットプラットフォーム
+
+### アニメーション
+- **Lottie** - アニメーション
+- **Tailwind Animations** - CSS アニメーション
+
+---
+
+## コーディング規約
+
+### 1. React / TypeScript
+
+#### コンポーネント
+- 関数コンポーネントを使用（`React.FC`型）
+- Props は interface で定義
+- ファイル名は PascalCase（例: `HomeScreen.tsx`）
+- 1ファイル200-300行を超えたらリファクタリング
+
+```typescript
+interface MyComponentProps {
+    name: string;
+    level: number;
+    onAction: () => void;
+}
+
+const MyComponent: React.FC<MyComponentProps> = ({ name, level, onAction }) => {
+    // 実装
+};
+```
+
+#### カスタムフック
+- `use` プレフィックスを使用
+- ファイル名は camelCase（例: `useHomeScreen.ts`）
+- ロジックとUIを分離（MVVMパターン）
+
+```typescript
+export const useMyHook = () => {
+    const [state, setState] = useState<Type>(initialValue);
+    
+    const handleAction = useCallback(() => {
+        // 実装
+    }, [dependencies]);
+    
+    return { state, handleAction };
+};
+```
+
+#### State管理
+- ローカル状態: `useState`
+- グローバル状態: `GameContext`
+- 副作用: `useEffect`
+- メモ化: `useCallback`, `useMemo`
+
+### 2. スタイリング
+
+#### Tailwind CSS
+- ユーティリティクラスを優先
+- カスタムCSSは最小限に
+- レスポンシブデザインを考慮
+
+```tsx
+<div className="flex items-center justify-center p-4 bg-gradient-to-br from-pink-200 to-purple-300">
+    <h1 className="text-3xl font-bold text-white drop-shadow-lg">
+        タイトル
+    </h1>
+</div>
+```
+
+### 3. アセット管理
+
+#### 画像
+- **重要**: ファイル拡張子は大文字 `.PNG` を使用
+- パスは `/images/` から始まる（`/assets/images/` ではない）
+- 画像読み込みには `imageUtils.ts` のヘルパー関数を使用
+
+```typescript
+import { getCharacterImage, getEggImage, getBackgroundImage } from '../utils/imageUtils';
+
+const imagePath = getCharacterImage(characterType, 'idle');
+```
+
+#### JSONデータ
+- パスは `/data/` から始まる（`/assets/data/` ではない）
+- `fetch` で非同期読み込み
+- エラーハンドリングを必ず実装
+
+```typescript
+fetch('/data/mbti_questions.json')
+    .then(res => res.json())
+    .then(data => setQuestions(data))
+    .catch(err => console.error("Failed to load:", err));
+```
+
+#### Lottieアニメーション
+- パスは `/lottie/` から始まる
+- ファイル名の大文字小文字に注意（例: `Level-up.json`）
+
+### 4. ビルド設定
+
+#### Vite設定
+- `publicDir: 'assets'` - assetsフォルダをdistのルートにコピー
+- `base: './'` - 相対パスを使用
+- `webDir: 'dist'` - Capacitorの出力先
+
+#### ビルドコマンド
+```bash
+npm run build          # Web版ビルド
+npx cap sync ios       # iOSと同期
+npx cap open ios       # Xcodeを開く
+npm run ios:build      # 一括実行
+```
+
+---
+
+## iOS固有のルール
+
+### 1. Capacitor設定
+- Bundle ID: `com.kotoba.tamago`
+- App名: `ことばのたまご`
+- `.xcworkspace` を使用（`.xcodeproj` ではない）
+
+### 2. ネイティブコード
+- `AppDelegate.swift` - アプリのエントリーポイント
+- `SceneDelegate.swift` - ウィンドウ管理
+- `CAPBridgeViewController` - Capacitorのウェブビュー
+
+### 3. ビルド
+- シミュレーター: デバッグ用
+- Any iOS Device: アーカイブ用
+- ビルド番号を毎回インクリメント
+
+---
+
+## データ構造
+
+### 主要な型定義（types.ts）
+
+```typescript
+// MBTI関連
+export type MbtiType = 'INFP' | 'ESTP' | 'INTP' | 'ISTJ' | ...;
+export type CharacterType = 'fairy' | 'inventor' | 'wizard' | 'knight';
+export enum EvolutionStage { EGG = 0, BASIC = 1, EVOLVED = 2 }
+
+// ゲーム状態
+export enum GameState {
+    SPLASH = 'splash',
+    MBTI_TEST = 'mbtiTest',
+    MBTI_RESULT = 'mbtiResult',
+    HOME = 'home',
+    QUIZ = 'quiz',
+    RESULT = 'result'
+}
+
+// ユーザー進捗
+export interface UserProgress {
+    mbtiType: MbtiType | null;
+    characterType: CharacterType | null;
+    level: number;
+    xp: number;
+    xpToNextLevel: number;
+    evolutionStage: EvolutionStage;
+}
+```
+
+---
+
+## ベストプラクティス
+
+### 1. パフォーマンス
+- 大きなリストには仮想化を検討
+- 画像の遅延読み込み
+- 不要な再レンダリングを避ける（`React.memo`, `useCallback`）
+
+### 2. エラーハンドリング
+- 画像読み込みエラーにフォールバック画像を設定
+- データ読み込み失敗時のエラーメッセージ
+- try-catch でラップ
+
+```typescript
+<img 
+    src={imagePath}
+    onError={(e) => {
+        const target = e.target as HTMLImageElement;
+        target.src = '/images/eggs/fallback_egg.png.png';
+    }}
+/>
+```
+
+### 3. アクセシビリティ
+- `alt` 属性を必ず設定
+- `aria-label` でボタンの説明
+- キーボードナビゲーションを考慮
+
+### 4. 国際化
+- 日本語をメインに
+- 将来的に英語対応を考慮した設計
+
+---
+
+## テスト
+
+### TestFlight
+- 内部テスト: 開発チーム用
+- ビルド番号を毎回インクリメント
+- リリースノートを日本語で記載
+
+### デバッグ
+- `console.log` でデバッグ情報を出力
+- エラーは `console.error` で記録
+- 本番環境では削除またはフラグで制御
+
+---
+
+## Git規約
+
+### コミットメッセージ
+- 日本語で記述
+- 変更内容を明確に
+- 箇条書きで詳細を記載
+
+```
+キャラクター名とレベルのテキストを白色に変更して視認性を向上
+
+- CharacterViewのキャラクター名とレベルを白色に変更
+- drop-shadowを追加して背景とのコントラストを改善
+- TestFlightフィードバックに基づく改善
+```
+
+### ブランチ戦略
+- `main` - 本番環境
+- `develop` - 開発環境（必要に応じて）
+- feature ブランチ（必要に応じて）
+
+---
+
+## 注意事項
+
+### やってはいけないこと
+- ❌ 画像パスに `/assets/` を含める
+- ❌ `.xcodeproj` を直接開く（`.xcworkspace` を使用）
+- ❌ ファイル拡張子を小文字 `.png` にする（大文字 `.PNG` を使用）
+- ❌ モックデータを本番環境に含める
+- ❌ 環境変数ファイルを上書きする前に確認なし
+
+### 必ずやること
+- ✅ ビルド前に `npm run build` を実行
+- ✅ iOS同期前に `npx cap sync ios` を実行
+- ✅ 画像パスの大文字小文字を確認
+- ✅ エラーハンドリングを実装
+- ✅ コメントとデバッグログを追加
+
+---
+
+## よくある問題と解決策
+
+### 問題: 画像が表示されない
+- 原因: パスが間違っている、または拡張子が小文字
+- 解決: `/images/` から始まるパスを使用、`.PNG` を使用
+
+### 問題: JSONが読み込めない
+- 原因: パスが `/assets/data/` になっている
+- 解決: `/data/` に変更
+
+### 問題: 真っ暗な画面
+- 原因: `CAPBridgeViewController` が初期化されていない
+- 解決: `SceneDelegate.swift` で `CAPBridgeViewController()` を設定
+
+### 問題: Xcodeビルドエラー
+- 原因: CocoaPodsの依存関係
+- 解決: `cd ios/App && pod install`
+
+---
+
+## 参考リンク
+
+- [React Documentation](https://react.dev/)
+- [Capacitor Documentation](https://capacitorjs.com/)
+- [Tailwind CSS Documentation](https://tailwindcss.com/)
+- [TypeScript Documentation](https://www.typescriptlang.org/)
+- [Lottie Files](https://lottiefiles.com/)
+
+---
+
+**最終更新**: 2025年10月25日
+**プロジェクトバージョン**: 1.0.0
+**対象プラットフォーム**: iOS (TestFlight内部テスト中)
+
