@@ -19,7 +19,7 @@ interface GameContextType {
     addExperience: (amount: number) => void;
     resetGame: () => void;
     setLearningLevel: (level: Difficulty) => void;
-    learningLevel: Difficulty;
+    learningLevel: Difficulty | null;
 }
 
 const GameContext = createContext<GameContextType | undefined>(undefined);
@@ -41,7 +41,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     const [isLoading, setIsLoading] = useState(true);
     const [currentDifficulty, setCurrentDifficulty] = useState<Difficulty | null>(null);
     const [quizResult, setQuizResult] = useState<QuizResult | null>(null);
-    const [learningLevel, setLearningLevelState] = useState<Difficulty>(Difficulty.BEGINNER);
+    const [learningLevel, setLearningLevelState] = useState<Difficulty | null>(null);
 
     useEffect(() => {
         const savedProgress = storageManager.loadUserProgress();
@@ -178,7 +178,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         storageManager.resetUserProgress();
         setUserProgressState(initialProgress);
         setGameState(GameState.HOME);
-        setLearningLevelState(Difficulty.BEGINNER);
+        setLearningLevelState(null);
         storageManager.clearLearningLevel();
     }, []);
 

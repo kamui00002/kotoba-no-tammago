@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { GameProvider, useGame } from './context/GameContext';
+import LevelSelectScreen from './components/LevelSelectScreen';
 import MbtiTest from './components/MbtiTest';
 import HomeScreen from './components/HomeScreen';
 import Quiz from './components/Quiz';
@@ -22,7 +23,7 @@ const AppRouter: React.FC = () => {
      * `useGame()`フックを通じて、アプリのグローバルな状態（gameStateやuserProgressなど）を
      * `GameContext`から受け取ります。これにより、どのコンポーネントからでも状態にアクセスできます。
      */
-    const { gameState, userProgress, isLoading } = useGame();
+    const { gameState, userProgress, isLoading, learningLevel } = useGame();
     const [isSplashVisible, setSplashVisible] = useState(true);
 
     // スプラッシュスクリーンを最低3秒間表示するためのロジック
@@ -53,7 +54,11 @@ const AppRouter: React.FC = () => {
          * このデータは `GameContext` 内でlocalStorageから読み込まれています。
          */
         if (!userProgress.mbtiType) {
-            // 初回起動時はMBTI診断画面へ
+            // 初回起動時: learningLevelが設定されていない場合はレベル選択画面へ
+            if (!learningLevel) {
+                return <LevelSelectScreen />;
+            }
+            // レベル選択後はMBTI診断画面へ
             return <MbtiTest />;
         }
 

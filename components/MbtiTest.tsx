@@ -1,5 +1,8 @@
 import React from 'react';
 import { useMbtiTest } from '../hooks/useMbtiTest';
+import { useGame } from '../context/GameContext';
+import { useTextDisplay } from '../hooks/useTextDisplay';
+import { Difficulty } from '../types';
 
 /**
  * @view MBTI診断画面のUIコンポーネント
@@ -10,6 +13,8 @@ import { useMbtiTest } from '../hooks/useMbtiTest';
 const MbtiTest: React.FC = () => {
     // ViewModelに相当するカスタムフックから状態とロジックを取得
     const { isLoading, questions, currentIndex, currentQuestion, handleAnswer } = useMbtiTest();
+    const { learningLevel } = useGame();
+    const displayText = useTextDisplay();
 
     // ローディング中の表示
     if (isLoading) {
@@ -101,7 +106,7 @@ const MbtiTest: React.FC = () => {
                         color: '#7c3aed',
                         textShadow: '0 2px 4px rgba(124, 58, 237, 0.3)'
                     }}>
-                        ✨ 問題 {currentIndex + 1}/16 ✨
+                        ✨ {displayText('問題')} {currentIndex + 1}/16 ✨
                     </div>
                     <div className="icon" style={{ fontSize: '24px' }}>✨</div>
                 </div>
@@ -202,7 +207,7 @@ const MbtiTest: React.FC = () => {
                             position: 'relative',
                             zIndex: 1
                         }}>
-                            💭 質問 💭
+                            💭 {displayText('質問')} 💭
                         </p>
                         <div style={{
                             fontSize: '22px',
@@ -214,7 +219,7 @@ const MbtiTest: React.FC = () => {
                             zIndex: 1,
                             animation: 'pulse 2s ease-in-out infinite'
                         }}>
-                            {currentQuestion.question}
+                            {displayText(currentQuestion.question)}
                         </div>
                     </div>
 
@@ -258,7 +263,7 @@ const MbtiTest: React.FC = () => {
                                 }}>
                                     {choice.id}.
                                 </span>
-                                {choice.text}
+                                {displayText(choice.text)}
                             </button>
                         ))}
                     </div>

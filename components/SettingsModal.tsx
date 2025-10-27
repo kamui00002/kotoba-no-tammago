@@ -1,8 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useGame } from '../context/GameContext';
 import { CHARACTER_DATA } from '../constants';
 import { Difficulty } from '../types';
 import { useTextDisplay } from '../hooks/useTextDisplay';
+import {
+    getBgmVolume,
+    updateBgmVolume,
+    getIsBgmMuted,
+    toggleBgmMute,
+    getSfxVolume,
+    updateSfxVolume,
+    getIsSfxMuted,
+    toggleSfxMute,
+    playSound,
+    SoundType,
+    setBgmVolume
+} from '../utils/soundPlayer';
 
 interface SettingsModalProps {
     isOpen: boolean;
@@ -14,8 +27,24 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose }) => {
     const { mbtiType, characterType, level, xp, xpToNextLevel } = userProgress;
     const [showLevelSelect, setShowLevelSelect] = useState(false);
 
+    // 音量状態
+    const [bgmVolume, setBgmVolumeState] = useState(getBgmVolume());
+    const [isBgmMuted, setIsBgmMuted] = useState(getIsBgmMuted());
+    const [sfxVolume, setSfxVolumeState] = useState(getSfxVolume());
+    const [isSfxMuted, setIsSfxMuted] = useState(getIsSfxMuted());
+
     // テキスト表示用のフック
     const displayText = useTextDisplay();
+
+    // モーダルが開いた時に最新の音量を取得
+    useEffect(() => {
+        if (isOpen) {
+            setBgmVolumeState(getBgmVolume());
+            setIsBgmMuted(getIsBgmMuted());
+            setSfxVolumeState(getSfxVolume());
+            setIsSfxMuted(getIsSfxMuted());
+        }
+    }, [isOpen]);
 
     const characterInfo = mbtiType && characterType ? CHARACTER_DATA[characterType] : null;
 
@@ -48,6 +77,45 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose }) => {
         }
     };
 
+    // BGM音量変更
+    const handleBgmVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const volume = parseFloat(e.target.value);
+        console.log('🎵 BGM Volume changing to:', volume);
+        setBgmVolumeState(volume);
+        updateBgmVolume(volume);
+    };
+
+    // BGMミュート切り替え
+    const handleBgmMuteToggle = () => {
+        console.log('🔇 Toggling BGM mute, current state:', isBgmMuted);
+        toggleBgmMute();
+        const newState = getIsBgmMuted();
+        console.log('🔇 New BGM mute state:', newState);
+        setIsBgmMuted(newState);
+    };
+
+    // 効果音音量変更
+    const handleSfxVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const volume = parseFloat(e.target.value);
+        console.log('✨ SFX Volume changing to:', volume);
+        setSfxVolumeState(volume);
+        updateSfxVolume(volume);
+    };
+
+    // 効果音ミュート切り替え
+    const handleSfxMuteToggle = () => {
+        console.log('🔇 Toggling SFX mute, current state:', isSfxMuted);
+        toggleSfxMute();
+        const newState = getIsSfxMuted();
+        console.log('🔇 New SFX mute state:', newState);
+        setIsSfxMuted(newState);
+        // テスト音を再生
+        if (!newState) {
+            console.log('🔊 Playing test sound');
+            playSound(SoundType.BUTTON);
+        }
+    };
+
     if (!isOpen) return null;
 
     return (
@@ -73,6 +141,115 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose }) => {
                                     learningLevel === Difficulty.INTERMEDIATE ? displayText('中級') : displayText('上級')}
                             </div>
                             <button className="modal-button" onClick={handleChangeLevel}>{displayText('レベル')}{displayText('変更')}</button>
+                        </div>
+                    </div>
+
+                    {/* Sound Settings Section */}
+                    <div className="modal-section">
+                        <div className="modal-section-title">🔊 {displayText('音量')}{displayText('設定')}</div>
+
+                        {/* BGM Settings */}
+                        <div className="modal-item">
+                            <div className="modal-label">🎵 BGM</div>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '10px' }}>
+                                <button
+                                    className="modal-button"
+                                    onClick={handleBgmMuteToggle}
+                                    style={{
+                                        width: '70px',
+                                        padding: '8px',
+                                        fontSize: '14px',
+                                        background: isBgmMuted ? '#ef4444' : '#10b981',
+                                        color: 'white',
+                                        border: 'none',
+                                        borderRadius: '8px',
+                                        cursor: 'pointer',
+                                        fontWeight: 'bold'
+                                    }}
+                                >
+                                    {isBgmMuted ? '🔇' : '🔊'}
+                                </button>
+                                <div style={{ flex: 1, display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                    <input
+                                        type="range"
+                                        min="0"
+                                        max="1"
+                                        step="0.05"
+                                        value={bgmVolume}
+                                        onChange={handleBgmVolumeChange}
+                                        disabled={isBgmMuted}
+                                        style={{
+                                            flex: 1,
+                                            height: '8px',
+                                            borderRadius: '5px',
+                                            outline: 'none',
+                                            opacity: isBgmMuted ? 0.5 : 1,
+                                            cursor: isBgmMuted ? 'not-allowed' : 'pointer'
+                                        }}
+                                    />
+                                    <span style={{
+                                        minWidth: '38px',
+                                        fontSize: '14px',
+                                        textAlign: 'right',
+                                        fontWeight: 'bold',
+                                        color: isBgmMuted ? '#999' : '#333'
+                                    }}>
+                                        {Math.round(bgmVolume * 100)}%
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* SFX Settings */}
+                        <div className="modal-item">
+                            <div className="modal-label">✨ {displayText('効果音')}</div>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '10px' }}>
+                                <button
+                                    className="modal-button"
+                                    onClick={handleSfxMuteToggle}
+                                    style={{
+                                        width: '70px',
+                                        padding: '8px',
+                                        fontSize: '14px',
+                                        background: isSfxMuted ? '#ef4444' : '#10b981',
+                                        color: 'white',
+                                        border: 'none',
+                                        borderRadius: '8px',
+                                        cursor: 'pointer',
+                                        fontWeight: 'bold'
+                                    }}
+                                >
+                                    {isSfxMuted ? '🔇' : '🔊'}
+                                </button>
+                                <div style={{ flex: 1, display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                    <input
+                                        type="range"
+                                        min="0"
+                                        max="1"
+                                        step="0.05"
+                                        value={sfxVolume}
+                                        onChange={handleSfxVolumeChange}
+                                        disabled={isSfxMuted}
+                                        style={{
+                                            flex: 1,
+                                            height: '8px',
+                                            borderRadius: '5px',
+                                            outline: 'none',
+                                            opacity: isSfxMuted ? 0.5 : 1,
+                                            cursor: isSfxMuted ? 'not-allowed' : 'pointer'
+                                        }}
+                                    />
+                                    <span style={{
+                                        minWidth: '38px',
+                                        fontSize: '14px',
+                                        textAlign: 'right',
+                                        fontWeight: 'bold',
+                                        color: isSfxMuted ? '#999' : '#333'
+                                    }}>
+                                        {Math.round(sfxVolume * 100)}%
+                                    </span>
+                                </div>
+                            </div>
                         </div>
                     </div>
 

@@ -8,7 +8,10 @@ import { Difficulty } from '../types';
 /**
  * Difficultyを LearningLevel に変換するヘルパー関数
  */
-function difficultyToLearningLevel(difficulty: Difficulty): LearningLevel {
+function difficultyToLearningLevel(difficulty: Difficulty | null): LearningLevel {
+    if (!difficulty) {
+        return 'beginner'; // デフォルトは初級表示
+    }
     switch (difficulty) {
         case Difficulty.BEGINNER:
             return 'beginner';
