@@ -170,20 +170,55 @@ const MbtiTest: React.FC = () => {
 
                 {/* 質問エリア */}
                 <div className="question-area" style={{ position: 'relative', zIndex: 10 }}>
-                    <div className="question-text" style={{
-                        background: 'linear-gradient(135deg, #fdf2f8, #f3e8ff)',
-                        border: '2px solid rgba(168, 85, 247, 0.4)',
-                        borderRadius: '20px',
-                        padding: '20px',
+                    {/* 問題文を強調 */}
+                    <div style={{
+                        background: 'linear-gradient(135deg, #fef3c7, #fde68a, #fcd34d)',
+                        border: '4px solid rgba(251, 191, 36, 0.6)',
+                        borderRadius: '25px',
+                        padding: '30px 20px',
                         margin: '20px',
-                        boxShadow: '0 8px 32px rgba(168, 85, 247, 0.2)',
-                        color: '#7c3aed',
-                        fontSize: '18px',
-                        fontWeight: 'bold',
-                        textAlign: 'center'
+                        boxShadow: '0 12px 40px rgba(251, 191, 36, 0.4), 0 0 30px rgba(168, 85, 247, 0.3)',
+                        textAlign: 'center',
+                        minHeight: '140px',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        justifyContent: 'center',
+                        position: 'relative',
+                        overflow: 'hidden'
                     }}>
-                        ✨ {currentQuestion.question} ✨
+                        {/* 背景装飾 */}
+                        <div style={{
+                            position: 'absolute',
+                            inset: 0,
+                            background: 'linear-gradient(135deg, rgba(255,255,255,0.5), transparent)',
+                            pointerEvents: 'none'
+                        }}></div>
+
+                        <p style={{
+                            fontSize: '16px',
+                            fontWeight: 'bold',
+                            color: '#92400e',
+                            marginBottom: '15px',
+                            position: 'relative',
+                            zIndex: 1
+                        }}>
+                            💭 質問 💭
+                        </p>
+                        <div style={{
+                            fontSize: '22px',
+                            fontWeight: '900',
+                            color: '#7c2d12',
+                            textShadow: '2px 2px 4px rgba(0,0,0,0.2), 0 0 15px rgba(251, 191, 36, 0.5)',
+                            lineHeight: '1.5',
+                            position: 'relative',
+                            zIndex: 1,
+                            animation: 'pulse 2s ease-in-out infinite'
+                        }}>
+                            {currentQuestion.question}
+                        </div>
                     </div>
+
+                    {/* 選択肢 */}
                     <div className="choices">
                         {currentQuestion.choices.map((choice) => (
                             <button
@@ -191,28 +226,39 @@ const MbtiTest: React.FC = () => {
                                 className="choice-button"
                                 onClick={() => handleAnswer(choice.axis)}
                                 style={{
-                                    background: 'linear-gradient(135deg, #fdf2f8, #f3e8ff)',
+                                    background: 'linear-gradient(135deg, rgba(253, 242, 248, 0.9), rgba(243, 232, 255, 0.9))',
                                     border: '2px solid rgba(168, 85, 247, 0.4)',
                                     borderRadius: '15px',
-                                    padding: '15px',
+                                    padding: '18px',
                                     margin: '10px 20px',
                                     boxShadow: '0 4px 16px rgba(168, 85, 247, 0.2)',
                                     color: '#7c3aed',
                                     fontSize: '16px',
-                                    fontWeight: 'bold',
+                                    fontWeight: '600',
                                     transition: 'all 0.3s ease',
-                                    cursor: 'pointer'
+                                    cursor: 'pointer',
+                                    textAlign: 'left'
                                 }}
                                 onMouseEnter={(e) => {
                                     e.currentTarget.style.transform = 'scale(1.05)';
                                     e.currentTarget.style.boxShadow = '0 8px 32px rgba(168, 85, 247, 0.4)';
+                                    e.currentTarget.style.background = 'linear-gradient(135deg, rgba(253, 242, 248, 1), rgba(243, 232, 255, 1))';
                                 }}
                                 onMouseLeave={(e) => {
                                     e.currentTarget.style.transform = 'scale(1)';
                                     e.currentTarget.style.boxShadow = '0 4px 16px rgba(168, 85, 247, 0.2)';
+                                    e.currentTarget.style.background = 'linear-gradient(135deg, rgba(253, 242, 248, 0.9), rgba(243, 232, 255, 0.9))';
                                 }}
                             >
-                                <span style={{ fontWeight: 'bold', color: '#a855f7' }}>✨ {choice.id}. ✨</span> {choice.text}
+                                <span style={{
+                                    fontWeight: 'bold',
+                                    color: '#a855f7',
+                                    fontSize: '18px',
+                                    marginRight: '8px'
+                                }}>
+                                    {choice.id}.
+                                </span>
+                                {choice.text}
                             </button>
                         ))}
                     </div>

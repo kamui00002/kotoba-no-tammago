@@ -66,6 +66,7 @@ export interface UserProgress {
     xpToNextLevel: number; // 次のレベルに必要なXP
     evolutionStage: EvolutionStage;
     justLeveledUp?: boolean; // レベルアップアニメーション用のフラグ
+    justEvolved?: boolean; // 進化アニメーション用のフラグ
 }
 
 export interface QuizResult {

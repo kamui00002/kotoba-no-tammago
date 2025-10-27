@@ -2,8 +2,10 @@ import React from 'react';
 import ExpBarView from './ExpBarView';
 import ParticleEffect from './ParticleEffect'; // パーティクルコンポーネントをインポート
 import LottieAnimation from './LottieAnimation'; // 追加
-import { MbtiType, CharacterType, EvolutionStage } from '../types';
+import { MbtiType, CharacterType, EvolutionStage, Difficulty } from '../types';
 import { getBackgroundImage } from '../utils/imageUtils';
+import { useTextDisplay } from '../hooks/useTextDisplay';
+import { useGame } from '../context/GameContext';
 
 interface CharacterViewProps {
     name: string;
@@ -32,6 +34,14 @@ const CharacterView: React.FC<CharacterViewProps> = ({
     isTapped,
     justLeveledUp,
 }) => {
+    // テキスト表示用のフック
+    const displayText = useTextDisplay();
+
+    // 学習レベルを取得
+    const { learningLevel } = useGame();
+
+    // 初級の場合は文字サイズを小さくして1行に収める
+    const nameFontSize = learningLevel === Difficulty.BEGINNER ? 'text-xl' : 'text-3xl';
 
     const backgroundImage = getBackgroundImage(characterType);
 
@@ -46,11 +56,11 @@ const CharacterView: React.FC<CharacterViewProps> = ({
         <div className="w-full bg-cover bg-center bg-no-repeat rounded-2xl shadow-2xl p-6 relative" style={{ backgroundImage: `url(${backgroundImage})` }}>
             <div className="rounded-xl p-4">
                 <div className="flex justify-between items-start mb-4">
-                    <div>
-                        <h2 className="text-3xl font-bold text-white drop-shadow-lg">{name}</h2>
+                    <div className="flex-1 min-w-0">
+                        <h2 className={`${nameFontSize} font-bold text-white drop-shadow-lg whitespace-nowrap overflow-hidden text-ellipsis`}>{displayText(name)}</h2>
                         <p className="text-lg text-white/90 drop-shadow-md">Lv. {level}</p>
                     </div>
-                    <div className="bg-purple-600 text-white text-sm font-bold px-3 py-1 rounded-full shadow-lg">{mbtiType}</div>
+                    <div className="bg-purple-600 text-white text-sm font-bold px-3 py-1 rounded-full shadow-lg ml-2 flex-shrink-0">{mbtiType}</div>
                 </div>
 
                 <div

@@ -4,6 +4,7 @@ import { useGame } from '../context/GameContext';
 import { QuizQuestion, Word } from '../types';
 import { generateQuizQuestions } from '../utils/wordUtils';
 import { QUIZ_LENGTH } from '../constants';
+import { playSound, SoundType } from '../utils/soundPlayer';
 
 export const useQuiz = () => {
     const { currentDifficulty, finishQuiz } = useGame();
@@ -42,8 +43,12 @@ export const useQuiz = () => {
         setSelectedAnswer(answer);
         setIsCorrect(correct);
 
+        // 正解/不正解音を再生
         if (correct) {
+            playSound(SoundType.CORRECT);
             setScore(prev => prev + 1);
+        } else {
+            playSound(SoundType.WRONG);
         }
 
         setTimeout(() => {

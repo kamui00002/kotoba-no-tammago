@@ -7,6 +7,7 @@ import ResultScreen from './components/ResultScreen';
 import SplashScreen from './components/SplashScreen';
 import MbtiResultScreen from './components/MbtiResultScreen';
 import { GameState } from './types';
+import { preloadSounds } from './utils/soundPlayer';
 
 /**
  * @view SwiftUIのNavigationStackや分岐ロジックに相当する "ルーター" コンポーネント
@@ -30,6 +31,12 @@ const AppRouter: React.FC = () => {
             setSplashVisible(false);
         }, 3000);
         return () => clearTimeout(timer);
+    }, []);
+
+    // アプリ起動時に音声ファイルを事前読み込み
+    useEffect(() => {
+        console.log('🎵 Preloading sounds...');
+        preloadSounds();
     }, []);
 
     // データの読み込み中、またはスプラッシュ表示時間中はスプラッシュスクリーンを表示

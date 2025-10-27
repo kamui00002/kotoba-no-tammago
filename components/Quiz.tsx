@@ -1,8 +1,10 @@
-1// Fix: Replaced placeholder content with a functional Quiz component.
-import React from 'react';
+// Fix: Replaced placeholder content with a functional Quiz component.
+import React, { useEffect } from 'react';
 import { useQuiz } from '../hooks/useQuiz';
 import { useGame } from '../context/GameContext';
 import { GameState } from '../types';
+import { useTextDisplay } from '../hooks/useTextDisplay';
+import { playBgm, BgmType } from '../utils/soundPlayer';
 
 const Quiz: React.FC = () => {
     const { setGameState } = useGame();
@@ -15,6 +17,14 @@ const Quiz: React.FC = () => {
         selectedAnswer,
         isCorrect
     } = useQuiz();
+
+    // テキスト表示用のフック
+    const displayText = useTextDisplay();
+
+    // クイズ画面のBGMを再生
+    useEffect(() => {
+        playBgm(BgmType.QUIZ);
+    }, []);
 
     if (isLoading) {
         return <div className="flex justify-center items-center h-screen bg-gradient-to-br from-pink-200 via-purple-200 to-indigo-200 text-purple-800">Loading quiz...</div>;
@@ -71,9 +81,21 @@ const Quiz: React.FC = () => {
                     ></div>
                 </div>
 
-                <div className="text-center mb-8 p-6 bg-gradient-to-br from-pink-100 via-purple-100 to-indigo-100 rounded-2xl min-h-[120px] flex flex-col items-center justify-center border-2 border-purple-300 shadow-lg">
-                    <p className="text-sm text-purple-600 mb-2 font-semibold">✨ What is the meaning of: ✨</p>
-                    <h2 className="text-4xl font-bold tracking-wider text-purple-800 bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent">{currentQuestion.word}</h2>
+                <div className="text-center mb-8 p-8 bg-gradient-to-br from-yellow-100 via-pink-100 to-purple-100 rounded-3xl min-h-[160px] flex flex-col items-center justify-center border-4 border-purple-400 shadow-2xl relative overflow-hidden">
+                    {/* 背景の装飾 */}
+                    <div className="absolute inset-0 bg-gradient-to-br from-white/50 to-transparent pointer-events-none"></div>
+
+                    <p className="text-base text-purple-700 mb-4 font-bold relative z-10">✨ What is the meaning of: ✨</p>
+                    <h2 className="text-6xl font-black tracking-wide relative z-10 animate-pulse"
+                        style={{
+                            textShadow: '3px 3px 6px rgba(0,0,0,0.2), 0 0 20px rgba(147,51,234,0.3)',
+                            background: 'linear-gradient(135deg, #ec4899 0%, #8b5cf6 50%, #3b82f6 100%)',
+                            WebkitBackgroundClip: 'text',
+                            WebkitTextFillColor: 'transparent',
+                            backgroundClip: 'text'
+                        }}>
+                        {currentQuestion.word}
+                    </h2>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -84,7 +106,7 @@ const Quiz: React.FC = () => {
                             disabled={!!selectedAnswer}
                             className={`w-full font-bold py-4 px-6 rounded-xl shadow-lg transition-all duration-300 transform ${!selectedAnswer ? 'hover:scale-105 hover:shadow-xl' : ''} ${getButtonClass(option)}`}
                         >
-                            <span className="text-lg">{option}</span>
+                            <span className="text-lg">{displayText(option)}</span>
                         </button>
                     ))}
                 </div>

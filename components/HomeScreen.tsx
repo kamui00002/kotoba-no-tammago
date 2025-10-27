@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useGame } from '../context/GameContext';
 import CharacterView from './CharacterView';
 import SettingsModal from './SettingsModal';
@@ -7,6 +7,8 @@ import StatsModal from './StatsModal';
 import LottieAnimation from './LottieAnimation';
 import { Difficulty } from '../types';
 import { useHomeScreen } from '../hooks/useHomeScreen';
+import { useTextDisplay } from '../hooks/useTextDisplay';
+import { playBgm, playSound, BgmType, SoundType } from '../utils/soundPlayer';
 
 const HomeScreen: React.FC = () => {
     const { startQuiz, learningLevel } = useGame();
@@ -21,10 +23,24 @@ const HomeScreen: React.FC = () => {
         addExperience,
     } = useHomeScreen();
 
+    // テキスト表示用のフック
+    const displayText = useTextDisplay();
+
     const [isSettingsOpen, setIsSettingsOpen] = useState(false);
     const [isInfoOpen, setIsInfoOpen] = useState(false);
     const [isStatsOpen, setIsStatsOpen] = useState(false);
     const [activeTab, setActiveTab] = useState('home');
+
+    // ホーム画面のBGMを再生
+    useEffect(() => {
+        playBgm(BgmType.HOME);
+    }, []);
+
+    // クイズ開始ボタンのハンドラー
+    const handleQuizStart = () => {
+        playSound(SoundType.BUTTON);
+        startQuiz(learningLevel);
+    };
 
     if (!characterInfo) return null; // データがまだない場合は何も表示しない
 
@@ -34,9 +50,9 @@ const HomeScreen: React.FC = () => {
                 {/* ヘッダー */}
                 <div className="flex justify-center items-center gap-4 mb-4">
                     {[
-                        { id: 'settings', label: '設定' },
+                        { id: 'settings', label: displayText('設定') },
                         { id: 'home', label: 'ホーム' },
-                        { id: 'stats', label: '統計' }
+                        { id: 'stats', label: displayText('統計') }
                     ].map((tab) => (
                         <button
                             key={tab.id}
@@ -97,16 +113,16 @@ const HomeScreen: React.FC = () => {
                     />
                     <button
                         className="quiz-start-button"
-                        onClick={() => startQuiz(learningLevel)}
+                        onClick={handleQuizStart}
                     >
-                        📝 英語クイズ開始
+                        📝 {displayText('英語クイズ開始')}
                         <div style={{ fontSize: '12px', marginTop: '5px', opacity: 0.9 }}>
-                            今日 2/10回
+                            {displayText('今日')} 2/10{displayText('回')}
                         </div>
                     </button>
                     <div className="stats">
-                        <div>🔥 1日目</div>
-                        <div>📚 単語5個</div>
+                        <div>🔥 1{displayText('日目')}</div>
+                        <div>📚 {displayText('単語')}5{displayText('個')}</div>
                     </div>
                 </div>
 
@@ -138,10 +154,10 @@ const HomeScreen: React.FC = () => {
                             </div>
 
                             <div className="text-white text-4xl font-bold mb-4 animate-pulse">
-                                🎉 進化しました！ 🎉
+                                🎉 {displayText('進化')}しました！ 🎉
                             </div>
                             <div className="text-white text-2xl opacity-90 animate-bounce">
-                                卵から子供に成長しました！
+                                {displayText('卵')}から{displayText('子供')}に{displayText('成長')}しました！
                             </div>
                         </div>
                     </div>

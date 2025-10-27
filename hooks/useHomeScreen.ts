@@ -1,9 +1,10 @@
 // hooks/useHomeScreen.ts
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useGame } from '../context/GameContext';
 import { CHARACTER_DATA } from '../constants';
 import { getEggImage, getCharacterImage } from '../utils/imageUtils';
 import { EvolutionStage } from '../types';
+import { playSound, SoundType } from '../utils/soundPlayer';
 
 /**
  * @observableobject SwiftUIの `HomeViewModel` に相当するカスタムフック
@@ -29,21 +30,41 @@ export const useHomeScreen = () => {
 
     const characterInfo = characterType ? CHARACTER_DATA[characterType] : null;
 
-    // レベルアップ時のアニメーション検知
+    // レベルアップアニメーション検知（フラグベース）
+    // ただし、進化と同時の場合はスキップ
     useEffect(() => {
-        // レベルアップ時のアニメーション
-        if (level > 1) {
+        if (userProgress.justLeveledUp && !userProgress.justEvolved) {
+            console.log(`🎉 Level up animation triggered! Level: ${level}`);
+            playSound(SoundType.LEVEL_UP);
             setJustLeveledUp(true);
             setTimeout(() => setJustLeveledUp(false), 3000);
+        } else if (userProgress.justLeveledUp && userProgress.justEvolved) {
+            console.log(`⏭️ Skipping level up animation (evolution in progress)`);
         }
+    }, [userProgress.justLeveledUp, userProgress.justEvolved, level]);
 
-        // レベルが5（子供への進化）になったときを検知
-        if (level === 5 && evolutionStage === EvolutionStage.CHILD) {
-            setIsHatching(true);
-            // 5秒後にアニメーションを終了
-            setTimeout(() => setIsHatching(false), 5000);
+    // 進化アニメーション検知（フラグベース）
+    useEffect(() => {
+        if (userProgress.justEvolved) {
+            console.log(`✨ Evolution animation triggered! Stage: ${evolutionStage}`);
+            playSound(SoundType.EVOLVE);
+
+            // 子供への進化（卵から孵化）
+            if (evolutionStage === EvolutionStage.CHILD) {
+                console.log(`🥚 Playing CHILD evolution animation!`);
+                setIsHatching(true);
+                setTimeout(() => {
+                    console.log(`🥚 Ending CHILD evolution animation`);
+                    setIsHatching(false);
+                }, 5000);
+            }
+
+            // 大人への進化
+            if (evolutionStage === EvolutionStage.ADULT) {
+                console.log(`👑 Playing ADULT evolution animation!`);
+            }
         }
-    }, [level, evolutionStage]);
+    }, [userProgress.justEvolved, evolutionStage]);
 
     useEffect(() => {
         if (!characterType) {

@@ -32,6 +32,7 @@ const initialProgress: UserProgress = {
     xpToNextLevel: 100,
     evolutionStage: EvolutionStage.EGG,
     justLeveledUp: false,
+    justEvolved: false,
 };
 
 export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
@@ -48,8 +49,9 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             if (!savedProgress.xpToNextLevel) {
                 savedProgress.xpToNextLevel = 100 + (savedProgress.level - 1) * 50;
             }
-            // 起動時はレベルアップフラグをオフにする
+            // 起動時はアニメーションフラグをオフにする
             savedProgress.justLeveledUp = false;
+            savedProgress.justEvolved = false;
             setUserProgressState(savedProgress);
         }
 
@@ -63,20 +65,38 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }, []);
 
     const setUserProgress = useCallback((progress: UserProgress) => {
-        storageManager.saveUserProgress(progress);
+        // アニメーションフラグは保存しない（一時的な状態のため）
+        const progressToSave = {
+            ...progress,
+            justLeveledUp: false,
+            justEvolved: false
+        };
+        storageManager.saveUserProgress(progressToSave);
         setUserProgressState(progress);
     }, []);
 
-    // @animation レベルアップアニメーション用のフラグをリセットするロジック
-    // userProgress.justLeveledUp が true になったら、1.5秒後に自動で false に戻す
+    // @animation レベルアップと進化のアニメーション用のフラグをリセットするロジック
     useEffect(() => {
         if (userProgress.justLeveledUp) {
+            console.log('⏰ Setting timer to reset justLeveledUp flag in 3s');
             const timer = setTimeout(() => {
-                setUserProgress({ ...userProgress, justLeveledUp: false });
-            }, 1500); // パーティクルアニメーションの時間
+                console.log('⏰ Resetting justLeveledUp flag');
+                setUserProgressState((prev) => ({ ...prev, justLeveledUp: false }));
+            }, 3000); // レベルアップアニメーションの時間
             return () => clearTimeout(timer);
         }
-    }, [userProgress, setUserProgress]);
+    }, [userProgress.justLeveledUp]);
+
+    useEffect(() => {
+        if (userProgress.justEvolved) {
+            console.log('⏰ Setting timer to reset justEvolved flag in 5s');
+            const timer = setTimeout(() => {
+                console.log('⏰ Resetting justEvolved flag');
+                setUserProgressState((prev) => ({ ...prev, justEvolved: false }));
+            }, 5000); // 進化アニメーションの時間
+            return () => clearTimeout(timer);
+        }
+    }, [userProgress.justEvolved]);
 
     const addExperience = useCallback((amount: number) => {
         let newXp = userProgress.xp + amount;
@@ -92,10 +112,19 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         }
 
         let newEvolutionStage = userProgress.evolutionStage;
+        const oldEvolutionStage = userProgress.evolutionStage;
+        let didEvolve = false;
+
         if (newLevel >= EVOLUTION_LEVELS.adult) {
             newEvolutionStage = EvolutionStage.ADULT;
         } else if (newLevel >= EVOLUTION_LEVELS.child) {
             newEvolutionStage = EvolutionStage.CHILD;
+        }
+
+        // 進化が起きたかどうかをチェック
+        if (newEvolutionStage !== oldEvolutionStage) {
+            console.log(`🌟 EVOLUTION TRIGGERED: ${oldEvolutionStage} → ${newEvolutionStage} at level ${newLevel}`);
+            didEvolve = true;
         }
 
         setUserProgress({
@@ -105,6 +134,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             xpToNextLevel: newXpToNextLevel,
             evolutionStage: newEvolutionStage,
             justLeveledUp: didLevelUp, // レベルアップした場合はフラグを立てる
+            justEvolved: didEvolve, // 進化した場合はフラグを立てる
         });
 
     }, [userProgress, setUserProgress]);
