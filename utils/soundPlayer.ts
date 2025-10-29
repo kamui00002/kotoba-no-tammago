@@ -15,6 +15,7 @@ export enum SoundType {
 
 // BGMの種類
 export enum BgmType {
+    OPENING = 'opening',
     HOME = 'home',
     MBTI_QUIZ = 'mbti_quiz',
     QUIZ = 'quiz',
@@ -32,6 +33,7 @@ const SOUND_PATHS: Record<SoundType, string> = {
 
 // BGMファイルのパスマップ
 const BGM_PATHS: Record<BgmType, string> = {
+    [BgmType.OPENING]: '/sounds/bgm/opening.mp3',
     [BgmType.HOME]: '/sounds/bgm/home.mp3',
     [BgmType.MBTI_QUIZ]: '/sounds/bgm/mbti-quiz.mp3',
     [BgmType.QUIZ]: '/sounds/bgm/quiz.mp3',
@@ -40,6 +42,7 @@ const BGM_PATHS: Record<BgmType, string> = {
 
 // BGMごとの音量調整（ファイルによって音量が異なるため）
 const BGM_VOLUMES: Record<BgmType, number> = {
+    [BgmType.OPENING]: 0.3,    // オープニング画面
     [BgmType.HOME]: 0.4,       // ホーム画面
     [BgmType.MBTI_QUIZ]: 0.25, // MBTI診断（少し小さめ）
     [BgmType.QUIZ]: 0.3,       // 英語クイズ

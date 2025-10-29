@@ -326,6 +326,43 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose }) => {
                             </div>
                         </div>
                     </div>
+
+                    {/* Reset Section */}
+                    <div className="modal-section">
+                        <div className="modal-section-title">🔄 {displayText('リセット')}</div>
+                        <div className="modal-item">
+                            <button
+                                className="modal-button"
+                                onClick={() => {
+                                    if (window.confirm('すべてのデータをリセットして、オープニング画面に戻りますか？\n\n⚠️ この操作は元に戻せません。')) {
+                                        console.log('🔄 User confirmed reset');
+                                        resetGame();
+                                        onClose();
+                                    }
+                                }}
+                                style={{
+                                    background: '#ef4444',
+                                    color: 'white',
+                                    fontWeight: 'bold',
+                                    padding: '12px',
+                                    border: 'none',
+                                    borderRadius: '8px',
+                                    cursor: 'pointer',
+                                    width: '100%'
+                                }}
+                            >
+                                🗑️ {displayText('すべてのデータをリセット')}
+                            </button>
+                            <p style={{
+                                fontSize: '12px',
+                                color: '#666',
+                                marginTop: '8px',
+                                textAlign: 'center'
+                            }}>
+                                ⚠️ {displayText('キャラクター、レベル、学習データが削除されます')}
+                            </p>
+                        </div>
+                    </div>
                 </div>
             </div>
 

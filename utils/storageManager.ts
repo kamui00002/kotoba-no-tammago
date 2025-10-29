@@ -143,3 +143,18 @@ export const clearLearningLevel = (): void => {
         console.error("Failed to clear learning level from localStorage:", error);
     }
 };
+
+/**
+ * @function resetAllData
+ * すべてのローカルストレージデータを削除します。
+ * オープニング画面をテストする際に使用します。
+ */
+export const resetAllData = (): void => {
+    try {
+        console.log('🗑️ Resetting all localStorage data...');
+        localStorage.clear();
+        console.log('✅ All data cleared!');
+    } catch (error) {
+        console.error("Failed to clear all data from localStorage:", error);
+    }
+};

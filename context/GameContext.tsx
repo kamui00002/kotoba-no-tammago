@@ -36,7 +36,7 @@ const initialProgress: UserProgress = {
 };
 
 export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-    const [gameState, setGameState] = useState<GameState>(GameState.HOME);
+    const [gameState, setGameState] = useState<GameState>(GameState.OPENING);
     const [userProgress, setUserProgressState] = useState<UserProgress>(initialProgress);
     const [isLoading, setIsLoading] = useState(true);
     const [currentDifficulty, setCurrentDifficulty] = useState<Difficulty | null>(null);
@@ -44,8 +44,10 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     const [learningLevel, setLearningLevelState] = useState<Difficulty | null>(null);
 
     useEffect(() => {
+        console.log('🎮 GameContext: Initializing...');
         const savedProgress = storageManager.loadUserProgress();
         if (savedProgress) {
+            console.log('📦 Found saved progress:', savedProgress.mbtiType, 'Level:', savedProgress.level);
             if (!savedProgress.xpToNextLevel) {
                 savedProgress.xpToNextLevel = 100 + (savedProgress.level - 1) * 50;
             }
@@ -53,15 +55,22 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             savedProgress.justLeveledUp = false;
             savedProgress.justEvolved = false;
             setUserProgressState(savedProgress);
+            // 2回目以降もオープニング画面を表示
+            console.log('🎬 Showing OPENING screen (2nd+ launch)');
+            // OPENINGのままにする（初期状態がOPENINGなので何もしない）
+        } else {
+            console.log('🆕 No saved progress found - first launch, staying in OPENING');
         }
 
         // 学習レベルを読み込み
         const savedLearningLevel = storageManager.loadLearningLevel();
         if (savedLearningLevel) {
+            console.log('📚 Found saved learning level:', savedLearningLevel);
             setLearningLevelState(savedLearningLevel);
         }
 
         setIsLoading(false);
+        console.log('✅ GameContext: Initialization complete');
     }, []);
 
     const setUserProgress = useCallback((progress: UserProgress) => {
@@ -175,11 +184,13 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }, []);
 
     const resetGame = useCallback(() => {
+        console.log('🔄 Resetting game to initial state...');
         storageManager.resetUserProgress();
         setUserProgressState(initialProgress);
-        setGameState(GameState.HOME);
+        setGameState(GameState.OPENING); // オープニング画面に戻る
         setLearningLevelState(null);
         storageManager.clearLearningLevel();
+        console.log('✅ Game reset complete - returning to OPENING');
     }, []);
 
     const value = {

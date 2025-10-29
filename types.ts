@@ -1,4 +1,5 @@
 export enum GameState {
+    OPENING = 'OPENING',
     HOME = 'HOME',
     QUIZ = 'QUIZ',
     RESULT = 'RESULT',

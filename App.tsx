@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { GameProvider, useGame } from './context/GameContext';
+import OpeningScreen from './components/OpeningScreen';
 import LevelSelectScreen from './components/LevelSelectScreen';
 import MbtiTest from './components/MbtiTest';
 import HomeScreen from './components/HomeScreen';
@@ -46,6 +47,8 @@ const AppRouter: React.FC = () => {
     }
 
     const renderContent = () => {
+        console.log('🎮 AppRouter - gameState:', gameState, 'mbtiType:', userProgress.mbtiType, 'learningLevel:', learningLevel);
+
         /**
          * @appstorage SwiftUIの `@AppStorage("firstLaunch")` による初回起動判定に相当
          *
@@ -54,26 +57,42 @@ const AppRouter: React.FC = () => {
          * このデータは `GameContext` 内でlocalStorageから読み込まれています。
          */
         if (!userProgress.mbtiType) {
-            // 初回起動時: learningLevelが設定されていない場合はレベル選択画面へ
+            // 初回起動時（MBTI診断未完了）
+            if (gameState === GameState.OPENING) {
+                console.log('🎬 Showing OpeningScreen (1st launch)');
+                return <OpeningScreen />;
+            }
+            // オープニング後: learningLevelが設定されていない場合はレベル選択画面へ
             if (!learningLevel) {
+                console.log('📊 Showing LevelSelectScreen');
                 return <LevelSelectScreen />;
             }
             // レベル選択後はMBTI診断画面へ
+            console.log('🧪 Showing MbtiTest');
             return <MbtiTest />;
         }
 
+        // 2回目以降（MBTI診断完了済み）
         // ゲームの状態に応じて表示する画面を切り替える (NavigationStackのルート分岐)
         switch (gameState) {
+            case GameState.OPENING:
+                console.log('🎬 Showing OpeningScreen (2nd+ launch)');
+                return <OpeningScreen />;
             case GameState.HOME:
+                console.log('🏠 Showing HomeScreen');
                 return <HomeScreen />;
             case GameState.QUIZ:
+                console.log('❓ Showing Quiz');
                 return <Quiz />;
             case GameState.RESULT:
+                console.log('🎯 Showing ResultScreen');
                 return <ResultScreen />;
             case GameState.MBTI_RESULT:
+                console.log('🎭 Showing MbtiResultScreen');
                 return <MbtiResultScreen />;
             default:
                 // 想定外の状態の場合は、安全なホーム画面に戻す
+                console.log('⚠️ Unknown state, showing HomeScreen');
                 return <HomeScreen />;
         }
     };
