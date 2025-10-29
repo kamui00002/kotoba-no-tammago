@@ -109,6 +109,18 @@ const OpeningScreen: React.FC = () => {
 
     return (
         <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-pink-200 via-purple-200 via-indigo-200 to-cyan-200 relative overflow-hidden">
+            {/* 画面全体スキップエリア（ステージ5では非表示） */}
+            {stage < 5 && (
+                <div
+                    onClick={(e) => {
+                        console.log('🖱️ Skip area clicked!', e);
+                        handleSkip();
+                    }}
+                    className="absolute inset-0 cursor-pointer"
+                    style={{ zIndex: 40, pointerEvents: 'auto' }}
+                />
+            )}
+
             {/* SKIPボタン（ステージ5では非表示） */}
             {stage < 5 && (
                 <motion.button
@@ -266,15 +278,32 @@ const OpeningScreen: React.FC = () => {
                 )}
             </AnimatePresence>
 
-            {/* ステージ5: タイトルとPUSHボタン */}
+            {/* ステージ5: 背景画像 */}
             <AnimatePresence>
                 {stage === 5 && (
                     <motion.div
-                        onClick={handleStart}
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ duration: 0.8 }}
+                        className="absolute inset-0 z-0"
+                    >
+                        <img
+                            src="/images/backgrounds/opening_background.png"
+                            alt="背景"
+                            className="w-full h-full object-cover"
+                        />
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
+            {/* ステージ5: タイトルとTAP TO START */}
+            <AnimatePresence>
+                {stage === 5 && (
+                    <motion.div
                         initial={{ opacity: 0, y: 50 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.8 }}
-                        className="text-center z-10 flex flex-col items-center cursor-pointer"
+                        className="text-center z-10 flex flex-col items-center relative"
                     >
                         {/* アプリアイコン */}
                         <motion.img
@@ -327,12 +356,13 @@ const OpeningScreen: React.FC = () => {
 
                         {/* TAP TO START ボタン */}
                         <motion.button
+                            onClick={handleStart}
                             initial={{ scale: 0 }}
                             animate={{ scale: 1 }}
                             transition={{ delay: 0.8, type: 'spring', stiffness: 200 }}
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
-                            className="px-8 py-3 transition-all duration-300 relative"
+                            className="px-16 py-6 transition-all duration-300 relative"
                             style={{
                                 background: 'transparent',
                                 border: 'none',
@@ -341,6 +371,7 @@ const OpeningScreen: React.FC = () => {
                                 letterSpacing: '0.2em',
                                 textTransform: 'uppercase',
                                 whiteSpace: 'nowrap',
+                                cursor: 'pointer',
                             }}
                         >
                             <span
