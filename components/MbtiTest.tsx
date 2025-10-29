@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useMbtiTest } from '../hooks/useMbtiTest';
 import { useGame } from '../context/GameContext';
 import { useTextDisplay } from '../hooks/useTextDisplay';
 import { Difficulty } from '../types';
+import { playBgm, BgmType } from '../utils/soundPlayer';
 
 /**
  * @view MBTI診断画面のUIコンポーネント
@@ -15,6 +16,12 @@ const MbtiTest: React.FC = () => {
     const { isLoading, questions, currentIndex, currentQuestion, handleAnswer } = useMbtiTest();
     const { learningLevel } = useGame();
     const displayText = useTextDisplay();
+
+    // MBTI診断画面のBGMを再生
+    useEffect(() => {
+        console.log('🎵 MBTI Test: Playing MBTI_QUIZ BGM');
+        playBgm(BgmType.MBTI_QUIZ);
+    }, []);
 
     // ローディング中の表示
     if (isLoading) {

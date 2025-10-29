@@ -86,13 +86,19 @@ const Quiz: React.FC = () => {
                     <div className="absolute inset-0 bg-gradient-to-br from-white/50 to-transparent pointer-events-none"></div>
 
                     <p className="text-base text-purple-700 mb-4 font-bold relative z-10">✨ What is the meaning of: ✨</p>
-                    <h2 className="text-6xl font-black tracking-wide relative z-10 animate-pulse"
+                    <h2
+                        className="font-black tracking-wide relative z-10 animate-pulse whitespace-nowrap"
                         style={{
+                            fontSize: currentQuestion.word.length > 15 ? '2rem' :
+                                currentQuestion.word.length > 12 ? '2.5rem' :
+                                    currentQuestion.word.length > 9 ? '3rem' : '3.75rem',
                             textShadow: '3px 3px 6px rgba(0,0,0,0.2), 0 0 20px rgba(147,51,234,0.3)',
                             background: 'linear-gradient(135deg, #ec4899 0%, #8b5cf6 50%, #3b82f6 100%)',
                             WebkitBackgroundClip: 'text',
                             WebkitTextFillColor: 'transparent',
-                            backgroundClip: 'text'
+                            backgroundClip: 'text',
+                            maxWidth: '100%',
+                            padding: '0 10px'
                         }}>
                         {currentQuestion.word}
                     </h2>
