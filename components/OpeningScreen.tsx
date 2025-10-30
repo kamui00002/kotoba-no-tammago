@@ -344,14 +344,22 @@ const OpeningScreen: React.FC = () => {
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             transition={{ delay: 0.5 }}
-                            className="text-purple-700 font-bold mb-8 px-6"
+                            className="font-extrabold mb-8"
                             style={{
-                                fontSize: 'clamp(1rem, 4vw, 1.5rem)',
-                                lineHeight: '1.4',
-                                maxWidth: '90%',
+                                fontSize: 'clamp(0.85rem, 3.5vw, 1.3rem)',
+                                lineHeight: '1.2',
+                                whiteSpace: 'nowrap',
+                                background: 'linear-gradient(135deg, #ec4899 0%, #a855f7 33%, #3b82f6 66%, #06b6d4 100%)',
+                                WebkitBackgroundClip: 'text',
+                                WebkitTextFillColor: 'transparent',
+                                backgroundClip: 'text',
+                                textShadow: '0 0 20px rgba(168,85,247,0.5)',
+                                filter: 'drop-shadow(0 2px 8px rgba(168,85,247,0.3)) drop-shadow(0 0 15px rgba(236,72,153,0.2))',
+                                letterSpacing: '0.02em',
+                                padding: '0 10px',
                             }}
                         >
-                            英語学習で、あなただけの相棒を育てよう！
+                            ✨ 英語学習で、あなただけの相棒を育てよう！✨
                         </motion.p>
 
                         {/* TAP TO START ボタン */}
