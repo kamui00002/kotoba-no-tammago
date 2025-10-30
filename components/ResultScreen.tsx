@@ -37,7 +37,7 @@ const ResultScreen: React.FC = () => {
     const accuracy = totalQuestions > 0 ? (score / totalQuestions) * 100 : 0;
 
     return (
-        <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-pink-200 via-purple-200 via-indigo-200 to-cyan-200 p-4 font-sans relative overflow-hidden">
+        <div className="w-screen h-screen flex flex-col items-center justify-center bg-gradient-to-br from-pink-200 via-purple-200 via-indigo-200 to-cyan-200 p-4 font-sans relative overflow-hidden">
             {/* 魔法のパーティクル効果のための装飾 */}
             <div className="absolute inset-0 overflow-hidden pointer-events-none">
                 <div className="absolute top-10 left-10 w-4 h-4 bg-pink-300 rounded-full animate-pulse"></div>
@@ -48,7 +48,7 @@ const ResultScreen: React.FC = () => {
                 <div className="absolute top-1/3 right-1/3 w-4 h-4 bg-purple-200 rounded-full animate-bounce"></div>
             </div>
 
-            <div className="w-full max-w-md bg-white/80 backdrop-blur-md rounded-3xl shadow-2xl p-8 text-center relative z-10 border-2 border-purple-200">
+            <div className="w-full max-w-2xl bg-white/80 backdrop-blur-md rounded-3xl shadow-2xl p-8 text-center relative z-10 border-2 border-purple-200">
                 <h1 className={`${titleSize} font-black mb-6 animate-pulse whitespace-nowrap`}
                     style={{
                         textShadow: '2px 2px 4px rgba(0,0,0,0.2), 0 0 15px rgba(234,179,8,0.3)',

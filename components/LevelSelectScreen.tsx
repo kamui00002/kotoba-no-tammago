@@ -39,7 +39,7 @@ const LevelSelectScreen: React.FC = () => {
     ];
 
     return (
-        <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-pink-200 via-purple-200 via-indigo-200 to-cyan-200 p-4 relative overflow-hidden">
+        <div className="w-screen h-screen flex flex-col items-center justify-center bg-gradient-to-br from-pink-200 via-purple-200 via-indigo-200 to-cyan-200 p-4 relative overflow-hidden">
             {/* 背景装飾 */}
             <div className="absolute inset-0 overflow-hidden pointer-events-none">
                 <div className="absolute top-10 left-10 w-4 h-4 bg-pink-300 rounded-full animate-pulse"></div>

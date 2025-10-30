@@ -30,8 +30,8 @@ const MbtiResultScreen: React.FC = () => {
 
     return (
         // 1. 背景: キャラクターのテーマカラーのグラデーション
-        <div className={`min-h-screen flex flex-col items-center justify-center p-4 bg-gradient-to-br ${characterInfo.gradient} text-white font-sans transition-all duration-500`}>
-            <div className="w-full max-w-md bg-black/30 backdrop-blur-md rounded-2xl shadow-2xl p-8 text-center flex flex-col items-center">
+        <div className={`w-screen h-screen flex flex-col items-center justify-center p-4 bg-gradient-to-br ${characterInfo.gradient} text-white font-sans transition-all duration-500`}>
+            <div className="w-full max-w-2xl bg-black/30 backdrop-blur-md rounded-2xl shadow-2xl p-8 text-center flex flex-col items-center">
                 <p className="text-lg text-white/80 mb-4">{displayText('あなたの相棒は...')}</p>
                 
                 {/* 2. キャラクター表示: バウンスアニメーション付き */}

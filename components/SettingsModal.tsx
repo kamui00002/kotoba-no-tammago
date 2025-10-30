@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useGame } from '../context/GameContext';
 import { CHARACTER_DATA } from '../constants';
-import { Difficulty } from '../types';
+import { Difficulty, GameState } from '../types';
 import { useTextDisplay } from '../hooks/useTextDisplay';
 import {
     getBgmVolume,
@@ -50,7 +50,20 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose }) => {
 
     const handleRetakeMbti = () => {
         if (window.confirm('MBTI診断をやり直しますか？現在のキャラクターとの思い出は残りますが、新しいキャラクターに変わります。')) {
-            resetGame();
+            // ユーザー進捗をリセット
+            const initialProgress = {
+                mbtiType: null,
+                characterType: null,
+                level: 1,
+                xp: 0,
+                xpToNextLevel: 100,
+                evolutionStage: 0,
+                justLeveledUp: false,
+                justEvolved: false,
+            };
+            setUserProgress(initialProgress);
+            // MBTI診断画面に直接移動（オープニングをスキップ）
+            setGameState(GameState.MBTI_TEST);
             onClose();
         }
     };

@@ -52,7 +52,7 @@ const Quiz: React.FC = () => {
 
 
     return (
-        <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-pink-200 via-purple-200 via-indigo-200 to-cyan-200 p-4 font-sans text-purple-800 relative overflow-hidden">
+        <div className="w-screen h-screen flex flex-col items-center justify-center bg-gradient-to-br from-pink-200 via-purple-200 via-indigo-200 to-cyan-200 p-4 font-sans text-purple-800 relative overflow-hidden">
             {/* 魔法のパーティクル効果のための装飾 */}
             <div className="absolute inset-0 overflow-hidden pointer-events-none">
                 <div className="absolute top-10 left-10 w-4 h-4 bg-pink-300 rounded-full animate-pulse"></div>
@@ -62,7 +62,7 @@ const Quiz: React.FC = () => {
                 <div className="absolute top-1/2 left-1/4 w-3 h-3 bg-pink-200 rounded-full animate-pulse"></div>
                 <div className="absolute top-1/3 right-1/3 w-4 h-4 bg-purple-200 rounded-full animate-bounce"></div>
             </div>
-            <div className="w-full max-w-lg bg-white/80 backdrop-blur-md rounded-3xl shadow-2xl p-6 border-2 border-purple-200 relative z-10">
+            <div className="w-full max-w-2xl bg-white/80 backdrop-blur-md rounded-3xl shadow-2xl p-6 border-2 border-purple-200 relative z-10">
                 <header className="flex justify-between items-center mb-4">
                     <p className="font-bold text-purple-600 text-lg">✨ Question {currentIndex + 1}/{questions.length} ✨</p>
                     <button
