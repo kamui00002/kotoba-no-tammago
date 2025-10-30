@@ -286,11 +286,18 @@ const OpeningScreen: React.FC = () => {
                         animate={{ opacity: 1 }}
                         transition={{ duration: 0.8 }}
                         className="absolute inset-0 z-0"
+                        style={{
+                            background: 'linear-gradient(135deg, #fce7f3 0%, #e9d5ff 50%, #dbeafe 100%)'
+                        }}
                     >
                         <img
                             src="/images/backgrounds/opening_background.png"
                             alt="背景"
-                            className="w-full h-full object-cover"
+                            className="w-full h-full"
+                            style={{
+                                objectFit: 'cover',
+                                objectPosition: 'center'
+                            }}
                         />
                     </motion.div>
                 )}
