@@ -2,6 +2,7 @@
 
 /**
  * 音声ファイルを再生するユーティリティ
+ * Web Audio APIを使用してiOSでも音量制御を可能にする
  */
 
 // 効果音の種類
@@ -59,7 +60,7 @@ const SOUND_VOLUMES: Record<SoundType, number> = {
 };
 
 // BGMのボリューム設定
-const DEFAULT_BGM_VOLUME = 0.5; // 0.3から0.5に変更（テスト用）
+const DEFAULT_BGM_VOLUME = 0.5;
 const DEFAULT_SFX_VOLUME = 1.0;
 
 // 音量とミュート状態の管理
@@ -68,11 +69,28 @@ let sfxVolume = DEFAULT_SFX_VOLUME;
 let isBgmMuted = false;
 let isSfxMuted = false;
 
+// Web Audio API関連
+let audioContext: AudioContext | null = null;
+let bgmGainNode: GainNode | null = null;
+let bgmSource: MediaElementAudioSourceNode | null = null;
+
 // 現在再生中のBGM
 let currentBgm: HTMLAudioElement | null = null;
 let currentBgmType: BgmType | null = null;
-let fadeInInterval: NodeJS.Timeout | null = null;
-let volumeMonitorInterval: NodeJS.Timeout | null = null;
+
+/**
+ * AudioContextを初期化（ユーザーインタラクション後に呼ぶ必要がある）
+ */
+function initAudioContext(): void {
+    if (audioContext) return;
+
+    try {
+        audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+        console.log('🎵 AudioContext initialized');
+    } catch (error) {
+        console.error('Failed to create AudioContext:', error);
+    }
+}
 
 /**
  * 効果音を再生する
@@ -94,7 +112,7 @@ export function playSound(soundType: SoundType): void {
 }
 
 /**
- * BGMを再生する
+ * BGMを再生する（Web Audio API使用）
  * @param bgmType - 再生するBGMの種類
  * @param loop - ループ再生するか（デフォルト: true）
  */
@@ -102,8 +120,14 @@ export function playBgm(bgmType: BgmType, loop: boolean = true): void {
     try {
         console.log(`\n🎵 playBgm called with: ${bgmType}`);
         console.log(`   Current BGM type: ${currentBgmType}`);
-        console.log(`   Current BGM exists: ${!!currentBgm}`);
-        console.log(`   Current BGM paused: ${currentBgm ? currentBgm.paused : 'N/A'}`);
+
+        // AudioContextを初期化
+        initAudioContext();
+
+        if (!audioContext) {
+            console.error('❌ AudioContext not available');
+            return;
+        }
 
         // 同じBGMが再生中なら何もしない
         if (currentBgmType === bgmType && currentBgm && !currentBgm.paused) {
@@ -113,73 +137,73 @@ export function playBgm(bgmType: BgmType, loop: boolean = true): void {
 
         console.log(`🎵 Switching BGM: ${currentBgmType} → ${bgmType}`);
 
-        // 既存のBGMを即座に停止（フェードアウトなし）
+        // 既存のBGMを停止
         if (currentBgm) {
             console.log(`🛑 Stopping current BGM`);
             currentBgm.pause();
             currentBgm.currentTime = 0;
-            currentBgm.volume = 0; // 音量も0にして確実に止める
-            // メモリリークを防ぐために参照を削除
-            const oldBgm = currentBgm;
             currentBgm = null;
-            currentBgmType = null;
-            // 少し待ってからGCに任せる
-            setTimeout(() => {
-                oldBgm.src = '';
-                oldBgm.load();
-            }, 100);
         }
 
-        // フェードインをキャンセル
-        if (fadeInInterval) {
-            clearInterval(fadeInInterval);
-            fadeInInterval = null;
+        // 既存のソースノードを切断
+        if (bgmSource) {
+            try {
+                bgmSource.disconnect();
+            } catch (e) {
+                // すでに切断されている場合のエラーを無視
+            }
+            bgmSource = null;
         }
+
+        currentBgmType = bgmType;
 
         // ミュート時は再生しない
         if (isBgmMuted) {
             console.log(`🔇 BGM is muted, not playing`);
-            currentBgmType = bgmType; // タイプは記憶しておく
             return;
         }
 
         // 新しいBGMを作成
         console.log(`📂 Loading BGM from: ${BGM_PATHS[bgmType]}`);
         const audio = new Audio(BGM_PATHS[bgmType]);
-        audio.volume = 0; // フェードイン用に0から始める
         audio.loop = loop;
+        audio.crossOrigin = 'anonymous'; // CORSエラー回避
+
+        // GainNodeを作成（なければ）
+        if (!bgmGainNode) {
+            bgmGainNode = audioContext.createGain();
+            bgmGainNode.connect(audioContext.destination);
+            console.log('🎚️ GainNode created and connected');
+        }
+
+        // MediaElementSourceNodeを作成
+        bgmSource = audioContext.createMediaElementSource(audio);
+        bgmSource.connect(bgmGainNode);
 
         // BGMごとの基本音量を取得
         const baseBgmVolume = BGM_VOLUMES[bgmType];
         // ユーザー設定の音量比率を適用
         const targetVolume = baseBgmVolume * bgmVolume;
 
+        // GainNodeで音量を設定（これはiOSでも機能する）
+        bgmGainNode.gain.value = targetVolume;
+
         console.log(`🎚️ Base BGM volume: ${baseBgmVolume.toFixed(2)}`);
         console.log(`🎚️ User volume: ${bgmVolume.toFixed(2)}`);
-        console.log(`🎚️ Target volume: ${targetVolume.toFixed(2)}`);
+        console.log(`🎚️ GainNode volume: ${targetVolume.toFixed(2)}`);
         console.log(`🔁 Loop: ${loop}`);
 
-        // 新しいBGMを再生開始
+        // BGMを再生
         audio.play().then(() => {
             console.log(`✅ BGM playback started successfully`);
-            // フェードインを無効化して即座に音量設定（デバッグ用）
-            audio.volume = targetVolume;
-            console.log(`🎚️ Set volume immediately to ${targetVolume.toFixed(2)} (fade-in disabled for debugging)`);
-            // fadeIn(audio, targetVolume, 1000);
-
-            // 音量監視を開始（デバッグ用）
-            startVolumeMonitoring();
         }).catch(error => {
             console.error(`❌ Failed to play BGM: ${bgmType}`, error);
-            console.error(`   Error name: ${error.name}`);
-            console.error(`   Error message: ${error.message}`);
         });
 
         currentBgm = audio;
-        currentBgmType = bgmType;
         console.log(`✅ BGM set as current: ${bgmType}\n`);
     } catch (error) {
-        console.warn(`Error creating BGM: ${bgmType}`, error);
+        console.error(`Error creating BGM: ${bgmType}`, error);
     }
 }
 
@@ -192,80 +216,18 @@ export function stopBgm(): void {
         currentBgm.pause();
         currentBgm.currentTime = 0;
         currentBgm = null;
-        currentBgmType = null;
     }
 
-    // フェードインをキャンセル
-    if (fadeInInterval) {
-        clearInterval(fadeInInterval);
-        fadeInInterval = null;
+    if (bgmSource) {
+        try {
+            bgmSource.disconnect();
+        } catch (e) {
+            // すでに切断されている場合のエラーを無視
+        }
+        bgmSource = null;
     }
 
-    // 音量監視を停止
-    stopVolumeMonitoring();
-}
-
-/**
- * 音量監視を開始（デバッグ用）
- */
-function startVolumeMonitoring(): void {
-    // 既存の監視を停止
-    stopVolumeMonitoring();
-
-    console.log(`👁️ Starting volume monitoring`);
-    let checkCount = 0;
-
-    volumeMonitorInterval = setInterval(() => {
-        if (!currentBgm) {
-            console.warn(`⚠️ Volume monitor: No currentBgm`);
-            stopVolumeMonitoring();
-            return;
-        }
-
-        // muted プロパティを使用するため、volume監視は不要
-        // 代わりに muted 状態を確認
-        const expectedMuted = isBgmMuted;
-        const actualMuted = currentBgm.muted;
-        const expectedVolume = bgmVolume;
-        const actualVolume = currentBgm.volume;
-
-        checkCount++;
-
-        // muted 状態が期待値と異なる場合のみ修正
-        if (expectedMuted !== actualMuted) {
-            console.warn(`⚠️ Muted state drift detected! (check #${checkCount})`);
-            console.warn(`   Expected muted: ${expectedMuted}, Actual muted: ${actualMuted}`);
-            console.warn(`   Correcting muted to ${expectedMuted}`);
-            currentBgm.muted = expectedMuted;
-        }
-
-        // ミュートされていない場合のみ音量をチェック
-        if (!isBgmMuted) {
-            const diff = Math.abs(expectedVolume - actualVolume);
-            if (diff > 0.01) {
-                console.warn(`⚠️ Volume drift detected! (check #${checkCount})`);
-                console.warn(`   Expected: ${expectedVolume.toFixed(2)}, Actual: ${actualVolume.toFixed(2)}, Diff: ${diff.toFixed(3)}`);
-                console.warn(`   Correcting volume to ${expectedVolume.toFixed(2)}`);
-                currentBgm.volume = expectedVolume;
-            }
-        }
-
-        // 30秒後に監視を停止（メモリリーク防止）
-        if (checkCount >= 60) { // 500ms * 60 = 30秒
-            console.log(`👁️ Volume monitoring stopped after 30 seconds`);
-            stopVolumeMonitoring();
-        }
-    }, 500); // 500msごとにチェック
-}
-
-/**
- * 音量監視を停止
- */
-function stopVolumeMonitoring(): void {
-    if (volumeMonitorInterval) {
-        clearInterval(volumeMonitorInterval);
-        volumeMonitorInterval = null;
-    }
+    currentBgmType = null;
 }
 
 /**
@@ -278,61 +240,114 @@ export function setBgmVolume(volume: number): void {
 }
 
 /**
- * フェードイン効果
+ * BGMの音量を取得
  */
-function fadeIn(audio: HTMLAudioElement, targetVolume: number, duration: number): void {
-    // 既存のフェードインをキャンセル
-    if (fadeInInterval) {
-        clearInterval(fadeInInterval);
-        fadeInInterval = null;
-    }
-
-    const steps = 20;
-    const stepDuration = duration / steps;
-    const volumeStep = targetVolume / steps;
-    let currentStep = 0;
-
-    console.log(`🎚️ fadeIn: Starting from 0 to ${targetVolume.toFixed(2)} over ${duration}ms`);
-
-    fadeInInterval = setInterval(() => {
-        currentStep++;
-        const newVolume = Math.min(volumeStep * currentStep, targetVolume);
-
-        // グローバルなbgmVolumeが変わっていたら、それに合わせる
-        const actualTarget = bgmVolume;
-        audio.volume = Math.min(volumeStep * currentStep, actualTarget);
-
-        if (currentStep >= steps) {
-            clearInterval(fadeInInterval!);
-            fadeInInterval = null;
-            // フェードイン完了後は現在のbgmVolumeに設定
-            audio.volume = bgmVolume;
-            console.log(`✅ fadeIn complete: final volume = ${audio.volume.toFixed(2)}`);
-        }
-    }, stepDuration);
+export function getBgmVolume(): number {
+    return bgmVolume;
 }
 
 /**
- * フェードアウト効果
+ * BGMの音量を設定
+ * @param volume - 音量（0.0 ~ 1.0）
  */
-function fadeOut(audio: HTMLAudioElement, duration: number): Promise<void> {
-    return new Promise((resolve) => {
-        const steps = 20;
-        const stepDuration = duration / steps;
-        const startVolume = audio.volume;
-        const volumeStep = startVolume / steps;
-        let currentStep = 0;
+export function updateBgmVolume(volume: number): void {
+    const oldVolume = bgmVolume;
+    bgmVolume = Math.max(0, Math.min(1, volume));
 
-        const interval = setInterval(() => {
-            currentStep++;
-            audio.volume = Math.max(startVolume - (volumeStep * currentStep), 0);
+    console.log(`🔊 BGM Volume update: ${oldVolume.toFixed(2)} → ${bgmVolume.toFixed(2)}`);
 
-            if (currentStep >= steps) {
-                clearInterval(interval);
-                resolve();
+    if (bgmGainNode && currentBgmType) {
+        if (isBgmMuted) {
+            console.log('🔇 BGM is muted, not changing volume');
+        } else {
+            const baseBgmVolume = BGM_VOLUMES[currentBgmType];
+            const targetVolume = baseBgmVolume * bgmVolume;
+            
+            console.log(`🎵 Setting GainNode volume to ${targetVolume.toFixed(2)}`);
+            bgmGainNode.gain.value = targetVolume;
+            console.log(`✅ Volume updated successfully`);
+        }
+    } else {
+        console.log('⚠️ No GainNode or BGM is playing');
+    }
+}
+
+/**
+ * BGMのミュート状態を取得
+ */
+export function getIsBgmMuted(): boolean {
+    return isBgmMuted;
+}
+
+/**
+ * BGMのミュートを切り替え
+ */
+export function toggleBgmMute(): void {
+    console.log(`\n🔇 toggleBgmMute called`);
+    console.log(`   Current state: ${isBgmMuted ? 'MUTED' : 'UNMUTED'}`);
+
+    isBgmMuted = !isBgmMuted;
+
+    if (bgmGainNode) {
+        if (isBgmMuted) {
+            // ミュート: Gainを0に
+            console.log(`🔇 Setting to MUTED`);
+            bgmGainNode.gain.value = 0;
+            console.log(`   ✅ BGM should now be SILENT`);
+        } else {
+            // ミュート解除: 元の音量に戻す
+            console.log(`🔊 Setting to UNMUTED`);
+            if (currentBgmType) {
+                const baseBgmVolume = BGM_VOLUMES[currentBgmType];
+                const targetVolume = baseBgmVolume * bgmVolume;
+                bgmGainNode.gain.value = targetVolume;
+                console.log(`   ✅ BGM should now be AUDIBLE at ${targetVolume.toFixed(2)}`);
             }
-        }, stepDuration);
-    });
+
+            // BGMが再生されていない場合は再生
+            if (!currentBgm || currentBgm.paused) {
+                if (currentBgmType) {
+                    console.log(`   Starting playback of ${currentBgmType}`);
+                    playBgm(currentBgmType);
+                }
+            }
+        }
+    } else {
+        console.log('⚠️ No GainNode available');
+    }
+
+    console.log(`✅ toggleBgmMute complete. New state: ${isBgmMuted ? 'MUTED' : 'UNMUTED'}\n`);
+}
+
+/**
+ * 効果音の音量を取得
+ */
+export function getSfxVolume(): number {
+    return sfxVolume;
+}
+
+/**
+ * 効果音の音量を設定
+ * @param volume - 音量（0.0 ~ 1.0）
+ */
+export function updateSfxVolume(volume: number): void {
+    sfxVolume = Math.max(0, Math.min(1, volume));
+    console.log(`🔊 SFX Volume: ${sfxVolume.toFixed(2)}`);
+}
+
+/**
+ * 効果音のミュート状態を取得
+ */
+export function getIsSfxMuted(): boolean {
+    return isSfxMuted;
+}
+
+/**
+ * 効果音のミュートを切り替え
+ */
+export function toggleSfxMute(): void {
+    isSfxMuted = !isSfxMuted;
+    console.log(isSfxMuted ? `🔇 SFX Muted` : `🔊 SFX Unmuted`);
 }
 
 /**
@@ -366,168 +381,3 @@ export function preloadSounds(): void {
         audio.preload = 'auto';
     });
 }
-
-// ========== 音量制御機能 ==========
-
-/**
- * BGMの音量を取得
- */
-export function getBgmVolume(): number {
-    return bgmVolume;
-}
-
-/**
- * BGMの音量を設定
- * @param volume - 音量（0.0 ~ 1.0）
- */
-export function updateBgmVolume(volume: number): void {
-    const oldVolume = bgmVolume;
-    bgmVolume = Math.max(0, Math.min(1, volume));
-
-    console.log(`🔊 BGM Volume update: ${oldVolume.toFixed(2)} → ${bgmVolume.toFixed(2)}`);
-    console.log(`   currentBgm exists: ${!!currentBgm}`);
-    console.log(`   currentBgmType: ${currentBgmType}`);
-    console.log(`   isBgmMuted: ${isBgmMuted}`);
-
-    if (currentBgm) {
-        console.log(`   currentBgm.paused: ${currentBgm.paused}`);
-        console.log(`   currentBgm.volume before: ${currentBgm.volume.toFixed(2)}`);
-    }
-
-    // フェードインをキャンセルして即座に音量変更
-    if (fadeInInterval) {
-        console.log('⏹️ Canceling fade-in interval');
-        clearInterval(fadeInInterval);
-        fadeInInterval = null;
-    }
-
-    if (currentBgm) {
-        if (isBgmMuted) {
-            console.log('🔇 BGM is muted, not changing volume');
-        } else {
-            console.log(`🎵 Setting currentBgm.volume to ${bgmVolume.toFixed(2)}`);
-
-            // 音量を設定
-            currentBgm.volume = bgmVolume;
-
-            // 設定後の状態を確認
-            console.log(`   currentBgm.volume after: ${currentBgm.volume.toFixed(2)}`);
-            console.log(`   currentBgm.muted: ${currentBgm.muted}`);
-            console.log(`   currentBgm.paused: ${currentBgm.paused}`);
-            console.log(`   currentBgm.currentTime: ${currentBgm.currentTime.toFixed(2)}s`);
-            console.log(`   currentBgm.duration: ${currentBgm.duration.toFixed(2)}s`);
-
-            // 音量が本当に変わったか確認するため、100ms後に再チェック
-            setTimeout(() => {
-                if (currentBgm) {
-                    console.log(`\n🔍 Volume check after 100ms:`);
-                    console.log(`   currentBgm.volume: ${currentBgm.volume.toFixed(2)}`);
-                    console.log(`   Expected: ${bgmVolume.toFixed(2)}`);
-                    if (Math.abs(currentBgm.volume - bgmVolume) > 0.01) {
-                        console.error(`❌ Volume was reset! This should not happen!`);
-                    } else {
-                        console.log(`✅ Volume is still correct`);
-                    }
-                }
-            }, 100);
-
-            // 音量監視は無効化（ユーザーの音量変更を妨げるため）
-            // startVolumeMonitoring();
-        }
-    } else {
-        console.log('❌ No BGM is currently playing');
-        console.warn('⚠️ PROBLEM: You are trying to change BGM volume but no BGM is playing!');
-        console.warn('   Make sure playBgm() was called and succeeded before changing volume.');
-    }
-}
-
-/**
- * BGMのミュート状態を取得
- */
-export function getIsBgmMuted(): boolean {
-    return isBgmMuted;
-}
-
-/**
- * BGMのミュートを切り替え
- */
-export function toggleBgmMute(): void {
-    console.log(`\n🔇 toggleBgmMute called`);
-    console.log(`   Current state: ${isBgmMuted ? 'MUTED' : 'UNMUTED'}`);
-    console.log(`   currentBgm exists: ${!!currentBgm}`);
-    console.log(`   currentBgm volume before: ${currentBgm ? currentBgm.volume.toFixed(2) : 'N/A'}`);
-
-    isBgmMuted = !isBgmMuted;
-
-    if (isBgmMuted) {
-        // ミュート: muted プロパティを使用
-        console.log(`🔇 Setting to MUTED`);
-        if (currentBgm) {
-            console.log(`   Setting currentBgm.muted = true`);
-            currentBgm.muted = true; // ← volumeではなくmutedを使用
-            console.log(`   currentBgm.muted after: ${currentBgm.muted}`);
-            console.log(`   ✅ BGM should now be SILENT`);
-        } else {
-            console.log(`   No currentBgm to mute`);
-        }
-    } else {
-        // ミュート解除
-        console.log(`🔊 Setting to UNMUTED`);
-        if (currentBgm) {
-            console.log(`   Setting currentBgm.muted = false`);
-            currentBgm.muted = false; // ← mutedを解除
-            currentBgm.volume = bgmVolume; // 音量も復元
-            console.log(`   currentBgm.muted after: ${currentBgm.muted}`);
-            console.log(`   currentBgm.volume after: ${currentBgm.volume.toFixed(2)}`);
-            console.log(`   ✅ BGM should now be AUDIBLE at ${bgmVolume.toFixed(2)}`);
-        } else if (currentBgmType) {
-            console.log(`   No currentBgm, starting playback of ${currentBgmType}`);
-            // BGMがない場合は再生
-            playBgm(currentBgmType);
-        } else {
-            console.log(`   No currentBgm or currentBgmType`);
-        }
-    }
-
-    // 音量監視は無効化（ユーザーの音量変更を妨げるため）
-    // if (currentBgm) {
-    //     startVolumeMonitoring();
-    // }
-
-    console.log(`✅ toggleBgmMute complete. New state: ${isBgmMuted ? 'MUTED' : 'UNMUTED'}\n`);
-}
-
-/**
- * 効果音の音量を取得
- */
-export function getSfxVolume(): number {
-    return sfxVolume;
-}
-
-/**
- * 効果音の音量を設定
- * @param volume - 音量（0.0 ~ 1.0）
- */
-export function updateSfxVolume(volume: number): void {
-    sfxVolume = Math.max(0, Math.min(1, volume));
-    console.log(`🔊 SFX Volume: ${sfxVolume}`);
-}
-
-/**
- * 効果音のミュート状態を取得
- */
-export function getIsSfxMuted(): boolean {
-    return isSfxMuted;
-}
-
-/**
- * 効果音のミュートを切り替え
- */
-export function toggleSfxMute(): void {
-    isSfxMuted = !isSfxMuted;
-    console.log(isSfxMuted ? `🔇 SFX Muted` : `🔊 SFX Unmuted`);
-}
-
-
-
-
