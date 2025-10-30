@@ -281,8 +281,8 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose }) => {
                         </div>
                     </div>
 
-                    {/* Debug Mode Section */}
-                    <div className="modal-section">
+                    {/* Debug Mode Section - オフ */}
+                    {/* <div className="modal-section">
                         <div className="modal-section-title">🛠️ {displayText('デバッグ')}モード</div>
                         <div className="modal-item">
                             <div className="modal-label">{displayText('テスト用機能')}</div>
@@ -308,7 +308,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose }) => {
                                 </button>
                             </div>
                         </div>
-                    </div>
+                    </div> */}
 
                     {/* App Info Section */}
                     <div className="modal-section">
@@ -316,7 +316,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose }) => {
                         <div className="modal-item">
                             <div className="modal-row">
                                 <div className="modal-label">バージョン</div>
-                                <div className="modal-value">v2.0.0</div>
+                                <div className="modal-value">v1.0.4</div>
                             </div>
                         </div>
                         <div className="modal-item">
@@ -327,8 +327,8 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose }) => {
                         </div>
                     </div>
 
-                    {/* Reset Section */}
-                    <div className="modal-section">
+                    {/* Reset Section - オフ */}
+                    {/* <div className="modal-section">
                         <div className="modal-section-title">🔄 {displayText('リセット')}</div>
                         <div className="modal-item">
                             <button
@@ -362,7 +362,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose }) => {
                                 ⚠️ {displayText('キャラクター、レベル、学習データが削除されます')}
                             </p>
                         </div>
-                    </div>
+                    </div> */}
                 </div>
             </div>
 
